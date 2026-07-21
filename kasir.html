@@ -141,9 +141,8 @@
     <main class="karts-main">
       <!-- Left Panel (Products) -->
       <section class="karts-left-panel">
-        <div class="karts-category-bar">
-          <button class="karts-cat-icon">🔲</button>
-          <button class="karts-cat-btn active">Semua Produk</button>
+        <div class="karts-category-chips" id="categoryContainer">
+          <button class="category-chip active" onclick="filterByCategory('Semua', this)">Semua Produk</button>
         </div>
         
         <div id="productList" class="karts-product-grid">
@@ -167,12 +166,15 @@
         <!-- Cart Items / Empty State -->
         <div id="cartItems" class="karts-cart-body">
           <div class="karts-empty-state">
-            <div class="karts-empty-illustration">
-              <!-- Placeholder for illustration -->
-              <div style="font-size: 80px; margin-bottom: 20px;">👩‍🍳</div>
+            <div class="karts-empty-illustration" style="text-align: center; margin: 40px 0;">
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
             </div>
-            <h3>Keranjang Kosong</h3>
-            <p>Silahkan masukkan pesanan dari pelanggan</p>
+            <h3 style="color: #6b7280; font-weight: 500;">Keranjang Kosong</h3>
+            <p style="color: #9ca3af; font-size: 14px;">Silahkan pilih produk untuk memulai transaksi</p>
           </div>
         </div>
 
@@ -1065,8 +1067,8 @@
       addToCart(item, 1);
       updateCartDisplay();
 
-      // Audio feedback?
-      // new Audio('beep.mp3').play().catch(e => {});
+      // Audio feedback
+      playBeepSound();
 
       // Low Stock Warning
       if (item.stock <= 5) {
@@ -1094,9 +1096,15 @@
 
       if (cart.length === 0) {
         cartItems.innerHTML = `
-          <p class="text-muted text-center" style="padding: 40px 20px;">
-            Keranjang kosong
-          </p>
+          <div style="text-align: center; padding: 40px 20px;">
+            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#e5e7eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <h3 style="color: #6b7280; font-weight: 500; font-size: 16px; margin:0">Keranjang Kosong</h3>
+            <p style="color: #9ca3af; font-size: 13px; margin-top:5px;">Pilih produk untuk menambah pesanan</p>
+          </div>
         `;
         totalEl.textContent = formatCurrency(0);
         return;
@@ -1993,6 +2001,76 @@ function executeTransaction() {
   }
   
 }
+}
+
+// --- NEW ENHANCEMENTS: AUDIO & CATEGORIES ---
+function playBeepSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 850;
+    gainNode.gain.setValueAtTime(0.03, audioCtx.currentTime); // low volume
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.08); // short 80ms beep
+  } catch(e) {}
+}
+
+let currentCategoryFilter = 'Semua';
+
+function initCategoryChips() {
+  const items = getItems();
+  if(!items || items.length === 0) return;
+  const categories = new Set(items.map(item => item.category || 'Umum'));
+  const categoryContainer = document.getElementById('categoryContainer');
+  if(!categoryContainer) return;
+  
+  let html = `<button class="category-chip active" onclick="filterByCategory('Semua', this)">Semua Produk</button>`;
+  categories.forEach(cat => {
+    html += `<button class="category-chip" onclick="filterByCategory('${cat}', this)">${cat}</button>`;
+  });
+  categoryContainer.innerHTML = html;
+}
+
+function filterByCategory(category, btnElement) {
+  currentCategoryFilter = category;
+  
+  // Update UI active state
+  if(btnElement) {
+    const btns = document.querySelectorAll('.category-chip');
+    btns.forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+  }
+  
+  // Apply filter
+  const items = getItems();
+  const searchEl = document.getElementById('searchProduct');
+  const query = searchEl ? searchEl.value.toLowerCase() : '';
+  
+  let filtered = items;
+  if(category !== 'Semua') {
+    filtered = filtered.filter(item => (item.category || 'Umum') === category);
+  }
+  if(query) {
+    filtered = filtered.filter(item => item.name.toLowerCase().includes(query) || (item.sku && item.sku.toLowerCase().includes(query)));
+  }
+  
+  renderProductGrid(filtered);
+}
+
+// override filterProducts to consider category
+window.filterProducts = function() {
+  filterByCategory(currentCategoryFilter, document.querySelector('.category-chip.active'));
+}
+
+// init chips on load
+window.addEventListener('load', () => {
+    setTimeout(initCategoryChips, 500); 
+});
+
 </script>
 
 </body>
