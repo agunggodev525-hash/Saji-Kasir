@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Barang - Aplikasi Kasir</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <!-- HTML5-QRCode for Camera Scanning -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <script>
+        // Init Dark Mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo-saji-kasir.jpg" alt="Saji Kasir" class="logo">
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="kasir.html" class="nav-link" data-page="kasir">
+                        <span class="nav-icon">🛒</span>
+                        <span>Kasir</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="data-barang.html" class="nav-link active" data-page="data-barang">
+                        <span class="nav-icon">📦</span>
+                        <span>Data Barang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pelanggan.html" class="nav-link" data-page="pelanggan">
+                        <span class="nav-icon">👥</span>
+                        <span>Pelanggan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="riwayat-transaksi.html" class="nav-link" data-page="riwayat">
+                        <span class="nav-icon">📜</span>
+                        <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="laporan.html" class="nav-link" data-page="laporan">
+                        <span class="nav-icon">📈</span>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pengaturan.html" class="nav-link" data-page="pengaturan">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Data Barang</h1>
+                <p>Kelola inventori produk toko Anda</p>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="card mb-lg">
+                <div class="flex-between gap-md">
+                    <div style="flex: 1; width: 100%;">
+                        <input type="text" class="form-input" id="searchInput" placeholder="🔍 Cari produk..."
+                            oninput="filterItems()">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('csvInput').click()">
+                            📂 Import CSV
+                        </button>
+                        <input type="file" id="csvInput" accept=".csv" style="display: none;"
+                            onchange="handleCsvUpload(this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Produk</h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Gambar</th>
+                                <th>Nama Produk</th>
+                                <th>Nama Produk</th>
+                                <th>Kategori</th>
+                                <th>Harga Beli</th>
+                                <th>Harga Jual</th>
+                                <th>Stok</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Floating Action Button -->
+            <button class="btn-fab" onclick="openModal('addItemModal')" title="Tambah Produk">
+                <span>+</span>
+            </button>
+        </main>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tambah Produk Baru</h3>
+                <button class="modal-close" onclick="closeModal('addItemModal')">&times;</button>
+            </div>
+
+            <form id="addItemForm" onsubmit="handleAddItem(event)">
+                <div class="form-group">
+                    <label class="form-label">Nama Produk *</label>
+                    <input type="text" class="form-input" id="addItemName" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gambar Produk</label>
+                    <input type="file" class="form-input" id="addItemImage" accept="image/*"
+                        onchange="previewImage(this, 'addItemPreview')">
+                    <div id="addItemPreview" class="image-preview mt-sm"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Barcode (Opsional)</label>
+                    <input type="text" class="form-input" id="addItemBarcode" placeholder="Scan atau ketik barcode">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Kategori *</label>
+                    <select class="form-select" id="addItemCategory" required>
+                        <option value="">Pilih kategori</option>
+                        <option value="Makanan">Makanan</option>
+                        <option value="Minuman">Minuman</option>
+                        <option value="Alat Tulis">Alat Tulis</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Pakaian">Pakaian</option>
+                        <option value="Kesehatan">Kesehatan</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Harga Beli (Modal) *</label>
+                    <input type="number" class="form-input" id="addItemBuyPrice" min="0" step="100" placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Harga Jual *</label>
+                    <input type="number" class="form-input" id="addItemPrice" min="0" step="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Stok Awal *</label>
+                    <input type="number" class="form-input" id="addItemStock" min="0" required>
+                </div>
+
+                <div class="flex gap-md mt-lg">
+                    <button type="button" class="btn btn-secondary w-full" onclick="closeModal('addItemModal')">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-success w-full">
+                        <span>✓</span>
+                        <span>Simpan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div id="editItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Produk</h3>
+                <button class="modal-close" onclick="closeModal('editItemModal')">&times;</button>
+            </div>
+
+            <form id="editItemForm" onsubmit="handleEditItem(event)">
+                <input type="hidden" id="editItemId">
+
+                <div class="form-group">
+                    <label class="form-label">Barcode (Opsional)</label>
+                    <input type="text" class="form-input" id="editItemBarcode" placeholder="Scan atau ketik barcode">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama Produk *</label>
+                    <input type="text" class="form-input" id="editItemName" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gambar Produk</label>
+                    <input type="file" class="form-input" id="editItemImage" accept="image/*"
+                        onchange="previewImage(this, 'editItemPreview')">
+                    <div id="editItemPreview" class="image-preview mt-sm"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Kategori *</label>
+                    <select class="form-select" id="editItemCategory" required>
+                        <option value="">Pilih kategori</option>
+                        <option value="Makanan">Makanan</option>
+                        <option value="Minuman">Minuman</option>
+                        <option value="Alat Tulis">Alat Tulis</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Pakaian">Pakaian</option>
+                        <option value="Kesehatan">Kesehatan</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Harga Beli (Modal) *</label>
+                    <input type="number" class="form-input" id="editItemBuyPrice" min="0" step="100" placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Harga Jual *</label>
+                    <input type="number" class="form-input" id="editItemPrice" min="0" step="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Stok *</label>
+                    <input type="number" class="form-input" id="editItemStock" min="0" required>
+                </div>
+
+                <div class="flex gap-md mt-lg">
+                    <button type="button" class="btn btn-secondary w-full" onclick="closeModal('editItemModal')">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-success w-full">
+                        <span>✓</span>
+                        <span>Update</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scanner Modal -->
+    <div id="scannerModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Scan Barcode</h3>
+                <button class="modal-close" onclick="stopScanner()">&times;</button>
+            </div>
+            <div
+                style="width: 100%; min-height: 300px; background: #000; position: relative; border-radius: var(--radius-md); overflow: hidden;">
+                <div id="reader" style="width: 100%;"></div>
+            </div>
+            <div class="text-center mt-md text-muted">
+                Arahkan kamera ke barcode produk
+            </div>
+            <div class="mt-lg">
+                <button class="btn btn-secondary w-full" onclick="stopScanner()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="sync-service.js"></script>
+    <script src="sync-ui.js"></script>
+    <script>
+        // ============================================
+        // AUTHENTICATION & AUTHORIZATION
+        // ============================================
+
+        // Require login and admin role
+        requireAdmin();
+
+        // Update sidebar with user info
+        updateSidebarUserInfo();
+        filterNavigation();
+
+        // Initialize sample data if needed
+        initializeData();
+
+        // ============================================
+        // DATA BARANG LOGIC
+        // ============================================
+
+        // Load and display items
+        function loadItems() {
+            const items = getItems();
+            const tableBody = document.getElementById('itemsTableBody');
+
+            if (!items || items.length === 0) {
+                tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center text-muted">
+              Belum ada produk. Klik "Tambah Produk" untuk menambahkan produk baru.
+            </td>
+          </tr>
+        `;
+                return;
+            }
+
+            tableBody.innerHTML = items.map(item => {
+                let stockBadge = 'success';
+                let stockStatus = 'Tersedia';
+
+                if (item.stock === 0) {
+                    stockBadge = 'danger';
+                    stockStatus = 'Habis';
+                } else if (item.stock <= 10) {
+                    stockBadge = 'warning';
+                    stockStatus = 'Rendah';
+                }
+
+                return `
+          <tr>
+            <td>#${item.id}</td>
+            <td>
+                <div class="product-thumb">
+                    ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<span class="no-image">📷</span>'}
+                </div>
+            </td>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td>${item.category}</td>
+            <td>${formatCurrency(item.buyPrice || 0)}</td>
+            <td style="font-weight: 600; color: var(--primary);">${formatCurrency(item.price)}</td>
+            <td>${item.stock}</td>
+            <td><span class="badge badge-${stockBadge}">${stockStatus}</span></td>
+            <td>
+              <div class="flex gap-sm">
+                <button class="btn btn-sm btn-secondary" onclick="openEditModal(${item.id})" title="Edit">
+                  ✏️
+                </button>
+                <button class="btn btn-sm btn-info" onclick="printLabel(${item.id})" title="Cetak Label">
+                  🖨️
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="handleDeleteItem(${item.id})" title="Hapus">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+            }).join('');
+        }
+
+        // Filter items
+        function filterItems() {
+            const query = document.getElementById('searchInput').value;
+            const items = query ? searchItems(query) : getItems();
+            const tableBody = document.getElementById('itemsTableBody');
+
+            if (items.length === 0) {
+                tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center text-muted">
+              Tidak ada produk yang sesuai dengan pencarian "${query}"
+            </td>
+          </tr>
+        `;
+                return;
+            }
+
+            tableBody.innerHTML = items.map(item => {
+                let stockBadge = 'success';
+                let stockStatus = 'Tersedia';
+
+                if (item.stock === 0) {
+                    stockBadge = 'danger';
+                    stockStatus = 'Habis';
+                } else if (item.stock <= 10) {
+                    stockBadge = 'warning';
+                    stockStatus = 'Rendah';
+                }
+
+                return `
+          <tr>
+            <td>#${item.id}</td>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td>${item.category}</td>
+            <td style="font-weight: 600; color: var(--primary);">${formatCurrency(item.price)}</td>
+            <td>${item.stock}</td>
+            <td><span class="badge badge-${stockBadge}">${stockStatus}</span></td>
+            <td>
+              <div class="flex gap-sm">
+                <button class="btn btn-sm btn-secondary" onclick="openEditModal(${item.id})">
+                  ✏️
+                </button>
+                <button class="btn btn-sm btn-info" onclick="printLabel(${item.id})" title="Cetak Label">
+                  🖨️
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="handleDeleteItem(${item.id})">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+            }).join('');
+        }
+
+        // Handle CSV Import
+        function handleCsvUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+
+                if (lines.length < 2) {
+                    showNotification('File CSV kosong', 'warning');
+                    return;
+                }
+
+                let successCount = 0;
+                let failCount = 0;
+
+                // Start from index 1 to skip header
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    // Simple split by comma
+                    const parts = line.split(',');
+
+                    // Enforce basic validation (Name, Category, Price, Stock)
+                    if (parts.length >= 4) {
+                        const name = parts[0].trim();
+                        // Skip if name is empty
+                        if (!name) {
+                            failCount++;
+                            continue;
+                        }
+
+                        const category = parts[1].trim() || 'Umum';
+                        const price = parseFloat(parts[2].trim()) || 0;
+                        const stock = parseInt(parts[3].trim()) || 0;
+
+                        const newItem = {
+                            name,
+                            category,
+                            price,
+                            buyPrice: price, // Default assumption
+                            stock,
+                            image: null
+                        };
+
+                        const result = addItem(newItem);
+                        if (result) successCount++;
+                        else failCount++;
+                    } else {
+                        failCount++;
+                    }
+                }
+
+                showNotification(`Import Selesai. Sukses: ${successCount}, Gagal: ${failCount}`, 'success');
+                loadItems();
+                input.value = ''; // Reset
+            };
+            reader.readAsText(file);
+        }
+
+        // Handle add item
+        async function handleAddItem(event) {
+            event.preventDefault();
+
+            const imageInput = document.getElementById('addItemImage');
+            let imageData = null;
+
+            if (imageInput.files && imageInput.files[0]) {
+                try {
+                    imageData = await resizeImage(imageInput.files[0]);
+                } catch (e) {
+                    console.error("Error resizing image", e);
+                    showNotification('Gagal memproses gambar', 'danger');
+                    return;
+                }
+            }
+
+            const newItem = {
+                name: document.getElementById('addItemName').value,
+                barcode: document.getElementById('addItemBarcode').value, // Add Barcode
+                category: document.getElementById('addItemCategory').value,
+                price: parseInt(document.getElementById('addItemPrice').value),
+                buyPrice: parseInt(document.getElementById('addItemBuyPrice').value) || 0, // Add buyPrice
+                stock: parseInt(document.getElementById('addItemStock').value),
+                image: imageData
+            };
+
+            addItem(newItem);
+            closeModal('addItemModal');
+            document.getElementById('addItemForm').reset();
+            document.getElementById('addItemPreview').innerHTML = '';
+            loadItems();
+            showNotification('Produk berhasil ditambahkan!', 'success');
+        }
+
+        // Open edit modal
+        function openEditModal(itemId) {
+            const item = getItemById(itemId);
+            if (!item) return;
+
+            document.getElementById('editItemId').value = item.id;
+            document.getElementById('editItemName').value = item.name;
+            document.getElementById('editItemBarcode').value = item.barcode || '';
+            document.getElementById('editItemCategory').value = item.category;
+            document.getElementById('editItemPrice').value = item.price;
+            document.getElementById('editItemBuyPrice').value = item.buyPrice || 0; // Load buyPrice
+            document.getElementById('editItemStock').value = item.stock;
+
+            // Preview existing image
+            const previewContainer = document.getElementById('editItemPreview');
+            if (item.image) {
+                previewContainer.innerHTML = `<img src="${item.image}" alt="Preview" style="max-height: 100px; border-radius: 4px;">`;
+            } else {
+                previewContainer.innerHTML = '';
+            }
+
+            openModal('editItemModal');
+        }
+
+        // Handle edit item
+        async function handleEditItem(event) {
+            event.preventDefault();
+
+            const itemId = parseInt(document.getElementById('editItemId').value);
+            const imageInput = document.getElementById('editItemImage');
+            const submitBtn = document.querySelector('#editItemForm button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            if (isNaN(itemId)) {
+                showNotification('Error: ID Produk tidak valid', 'danger');
+                return;
+            }
+
+            let updates = {
+                name: document.getElementById('editItemName').value,
+                barcode: document.getElementById('editItemBarcode').value,
+                category: document.getElementById('editItemCategory').value,
+                price: parseInt(document.getElementById('editItemPrice').value),
+                buyPrice: parseInt(document.getElementById('editItemBuyPrice').value) || 0, // Save buyPrice
+                stock: parseInt(document.getElementById('editItemStock').value)
+            };
+
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>⏳</span><span>Menyimpan...</span>';
+
+            // Only update image if a new one is selected
+            if (imageInput.files && imageInput.files[0]) {
+                try {
+                    // With timeout safeguard from app.js (if updated)
+                    updates.image = await resizeImage(imageInput.files[0]);
+                } catch (e) {
+                    console.error("Error resizing image", e);
+                    showNotification('Gagal memproses gambar: ' + (e.message || 'Error tidak diketahui'), 'danger');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    return;
+                }
+            }
+
+            try {
+                // Determine if sync is needed or handled by updateItem
+                const updated = updateItem(itemId, updates);
+
+                // Add minor delay for visual feedback if instant
+                await new Promise(r => setTimeout(r, 300));
+
+                if (updated) {
+                    closeModal('editItemModal');
+                    loadItems();
+                    showNotification('Produk berhasil diupdate!', 'success');
+                } else {
+                    showNotification('Gagal menyimpan: Produk tidak ditemukan', 'danger');
+                }
+            } catch (error) {
+                console.error("Save error:", error);
+                showNotification('Terjadi kesalahan saat menyimpan data', 'danger');
+            } finally {
+                if (document.getElementById('editItemModal').style.display !== 'none') {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            }
+        }
+
+        // Image Preview Helper
+        function previewImage(input, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    container.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-height: 100px; border-radius: 4px;">`;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Handle delete item
+        function handleDeleteItem(itemId) {
+            const item = getItemById(itemId);
+            if (!item) return;
+
+            if (confirm(`Yakin ingin menghapus "${item.name}"?\nTindakan ini tidak dapat dibatalkan.`)) {
+                deleteItem(itemId);
+                loadItems();
+                showNotification('Produk berhasil dihapus!', 'info');
+            }
+        }
+
+        // Print Label Logic
+        function printLabel(itemId) {
+            const item = getItemById(itemId);
+            if (!item) return;
+
+            // Generate Barcode Data URL
+            const canvas = document.createElement('canvas');
+            try {
+                JsBarcode(canvas, item.barcode || item.id.toString(), {
+                    format: "CODE128",
+                    displayValue: true,
+                    fontSize: 14,
+                    height: 40,
+                    width: 2,
+                    margin: 0
+                });
+            } catch (e) {
+                console.error("Barcode generation failed", e);
+                // Fallback for invalid barcode string
+                JsBarcode(canvas, item.id.toString(), {
+                    format: "CODE128",
+                    displayValue: true,
+                    fontSize: 14,
+                    height: 40,
+                    width: 2,
+                    margin: 0
+                });
+            }
+            const barcodeDataUrl = canvas.toDataURL("image/png");
+
+            // Open new window for printing
+            const printWindow = window.open('', '', 'width=600,height=400');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Cetak Label - ${item.name}</title>
+                    <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100vh;
+                            margin: 0;
+                        }
+                        .label {
+                            border: 1px dashed #ccc;
+                            padding: 10px;
+                            width: 200px; /* Standard label width */
+                            text-align: center;
+                            page-break-inside: avoid;
+                        }
+                        .shop-name {
+                            font-size: 10px;
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                            text-transform: uppercase;
+                        }
+                        .product-name {
+                            font-size: 12px;
+                            margin-bottom: 5px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                        .price {
+                            font-size: 14px;
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                        @media print {
+                            body { height: auto; display: block; }
+                            .label { border: none; } 
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="label">
+                        <div class="shop-name">Saji Kasir</div>
+                        <div class="product-name">${item.name}</div>
+                        <div class="price">${formatCurrency(item.price)}</div>
+                        <img src="${barcodeDataUrl}" />
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            window.onafterprint = function() {
+                                window.close();
+                            }
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // Set active page
+        setActivePage('data-barang');
+
+        // Global Error Handler
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            const string = msg.toLowerCase();
+            const substring = "script error";
+            if (string.indexOf(substring) > -1) {
+                alert('Script Error: See Browser Console for Detail');
+            } else {
+                const message = [
+                    'Message: ' + msg,
+                    'URL: ' + url,
+                    'Line: ' + lineNo,
+                    'Column: ' + columnNo,
+                    'Error object: ' + JSON.stringify(error)
+                ].join(' - ');
+
+                console.error(message);
+                // Optional: show visible error only if critical
+                // alert('Error: ' + msg); 
+            }
+            return false;
+        };
+
+        // Wrap loadItems in try-catch
+        try {
+            // Load initial data
+            loadItems();
+        } catch (e) {
+            console.error('Error loading items:', e);
+            document.getElementById('itemsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-danger">
+                        Gagal memuat data: ${e.message}
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Listen for remote updates
+        window.addEventListener('dataRefreshedFromServer', () => {
+            console.log('🔄 Reloading items due to server sync...');
+            try {
+                loadItems();
+                showNotification('Data diperbarui dari server', 'info');
+            } catch (e) {
+                console.error('Error reloading items:', e);
+            }
+        });
+    </script>
+</body>
+
+</html>

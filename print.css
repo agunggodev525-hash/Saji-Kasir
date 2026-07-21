@@ -1,0 +1,160 @@
+/* Print Styles for Thermal Receipt */
+@media print {
+
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Reset body styles for print */
+    body {
+        margin: 0;
+        padding: 0;
+        background: white;
+        color: black;
+    }
+
+    /* Receipt Container */
+    #receiptPrintArea,
+    #receiptPrintArea * {
+        visibility: visible;
+    }
+
+    #receiptPrintArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Remove page margins/headers/footers */
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
+    /* Formatting for thermal paper */
+    .receipt-container {
+        font-family: 'Courier New', Courier, monospace;
+        /* Monospace is key for receipt look */
+        font-size: 12px;
+        line-height: 1.2;
+        padding: 0;
+        /* Minimal padding */
+    }
+
+    /* 58mm default width constraint */
+    .receipt-58mm {
+        width: 58mm;
+        /* Physical width */
+        max-width: 48mm;
+        /* Safe printable width approx */
+        margin: 0 auto;
+        /* Center alignment */
+    }
+
+    /* 80mm width constraint */
+    .receipt-80mm {
+        width: 80mm;
+        max-width: 72mm;
+        margin: 0 auto;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .text-bold {
+        font-weight: bold;
+    }
+
+    .mb-1 {
+        margin-bottom: 4px;
+    }
+
+    .mb-2 {
+        margin-bottom: 8px;
+    }
+
+    /* Dashed dividers for authentic look */
+    .border-bottom {
+        border-bottom: 1px dashed #000;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+    }
+
+    .border-top {
+        border-top: 1px dashed #000;
+        padding-top: 4px;
+        margin-top: 4px;
+    }
+
+    /* Flexible layouts */
+    .receipt-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2px;
+    }
+
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Ensure colors are strict black/white */
+    * {
+        color: black !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}
+
+/* Screen styles for previewing the receipt in the modal */
+/* These styles mimic the print look but inside the modal */
+#receiptContent .receipt-container {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    /* Slightly larger for screen readability */
+    line-height: 1.4;
+    color: black;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+#receiptContent .border-bottom {
+    border-bottom: 1px dashed #ccc;
+    /* Lighter dash on screen */
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+#receiptContent .border-top {
+    border-top: 1px dashed #ccc;
+    padding-top: 5px;
+    margin-top: 5px;
+}
+
+#receiptContent .text-center {
+    text-align: center;
+}
+
+#receiptContent .text-right {
+    text-align: right;
+}
+
+#receiptContent .text-bold {
+    font-weight: bold;
+}
+
+#receiptContent .receipt-row {
+    display: flex;
+    justify-content: space-between;
+}

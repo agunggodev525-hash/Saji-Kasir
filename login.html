@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Saji Kasir</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <!-- ID "appLogo" is crucial for White Label functionality -->
+                    <img id="appLogo" src="logo-saji-kasir.jpg" alt="Logo Aplikasi">
+                </div>
+                <!-- Classes "app-name" and "login-title" allow white label update + styling -->
+                <h1 class="login-title app-name">Saji Kasir</h1>
+                <p class="login-subtitle">Silakan login untuk melanjutkan</p>
+            </div>
+
+            <div id="loginError" class="login-error" style="display: none;">
+                <span>⚠️</span>
+                <span id="errorMessage">Username atau password salah</span>
+            </div>
+
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <input type="text" class="login-input" id="username" placeholder="Username" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="login-input" id="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span>Login Masuk</span>
+                    <span>→</span>
+                </button>
+            </form>
+
+
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (isLoggedIn()) {
+            const user = getCurrentUser();
+            if (user.role === 'admin') {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = 'kasir.html';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Disable button during login
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span>Verifikasi...</span>';
+            errorDiv.style.display = 'none';
+
+            // Simulate short delay for better UX
+            setTimeout(() => {
+                const result = login(username, password);
+
+                if (result.success) {
+                    // Success! Show success state
+                    loginBtn.innerHTML = '<span>Berhasil!</span>';
+                    loginBtn.style.background = 'var(--success)';
+
+                    // Redirect based on role
+                    setTimeout(() => {
+                        if (result.user.role === 'admin') {
+                            window.location.href = 'index.html';
+                        } else {
+                            window.location.href = 'kasir.html';
+                        }
+                    }, 500);
+                } else {
+                    // Error! Show error message
+                    errorMessage.textContent = result.message;
+                    errorDiv.style.display = 'flex';
+
+                    // Reset button
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<span>Login Masuk</span><span>→</span>';
+                    loginBtn.style.background = '';
+                }
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

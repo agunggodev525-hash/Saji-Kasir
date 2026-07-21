@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - Aplikasi Kasir</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="print.css"> <!-- Import print css for preview styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        // Init Dark Mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+    <style>
+        /* Special styles for preview area */
+        #previewContainer {
+            background: #eee;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 400px;
+            overflow-y: auto;
+        }
+
+        .receipt-preview {
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            /* Mimic modal receipt styles */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            color: black;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        /* Override print styles strictly for preview div */
+        .receipt-preview .border-bottom {
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        .receipt-preview .border-top {
+            border-top: 1px dashed #ccc;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo-saji-kasir.jpg" alt="Saji Kasir" class="logo">
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="kasir.html" class="nav-link" data-page="kasir">
+                        <span class="nav-icon">🛒</span>
+                        <span>Kasir</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="data-barang.html" class="nav-link" data-page="data-barang">
+                        <span class="nav-icon">📦</span>
+                        <span>Data Barang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pelanggan.html" class="nav-link" data-page="pelanggan">
+                        <span class="nav-icon">👥</span>
+                        <span>Pelanggan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="riwayat-transaksi.html" class="nav-link" data-page="riwayat">
+                        <span class="nav-icon">📜</span>
+                        <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="laporan.html" class="nav-link" data-page="laporan">
+                        <span class="nav-icon">📈</span>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pengaturan.html" class="nav-link active" data-page="pengaturan">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Pengaturan Toko</h1>
+                <p>Sesuaikan informasi toko dan struk pembayaran</p>
+            </div>
+
+            <div class="grid grid-2">
+                <!-- LEFT COLUMN: Form -->
+                <div>
+                    <div class="card">
+                        <form id="settingsForm" onsubmit="handleSaveSettings(event)">
+                            <!-- Informasi Umum -->
+                            <div class="mb-lg">
+                                <h3
+                                    style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--bg-tertiary); padding-bottom: 8px;">
+                                    Informasi Toko</h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">Nama Toko</label>
+                                    <input type="text" class="form-input" id="storeName"
+                                        placeholder="Contoh: Saji Kasir" required oninput="updatePreview()">
+                                </div>
+
+                                <div class="form-group">
+                                    <textarea class="form-textarea" id="storeAddress" rows="3"
+                                        placeholder="Alamat lengkap toko..." oninput="updatePreview()"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Terminal ID</label>
+                                    <input type="text" class="form-input" id="terminalId" placeholder="Contoh: 01"
+                                        maxlength="2">
+                                    <small class="text-muted">ID unik untuk perangkat ini (Max 2 karakter)</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Nomor WhatsApp</label>
+                                    <input type="text" class="form-input" id="storePhone"
+                                        placeholder="Contoh: 08123456789" oninput="updatePreview()">
+                                </div>
+                            </div>
+
+                            <!-- Manajemen Akun -->
+                            <div class="mb-lg">
+                                <h3
+                                    style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--bg-tertiary); padding-bottom: 8px;">
+                                    Manajemen Akun
+                                </h3>
+
+                                <div class="flex gap-md mb-md">
+                                    <div style="flex: 1;">
+                                        <label class="form-label">Pilih User</label>
+                                        <select class="form-select" id="accountRole">
+                                            <option value="admin">Admin</option>
+                                            <option value="kasir">Kasir</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label class="form-label">Username Baru (Opsional)</label>
+                                        <input type="text" class="form-input" id="newUsername"
+                                            placeholder="Biarkan kosong jika tetap">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Password Baru</label>
+                                    <div style="display: flex; gap: 8px;">
+                                        <input type="password" class="form-input" id="newPassword"
+                                            placeholder="Masukkan password baru">
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="updateAccount()">Update</button>
+                                    </div>
+                                    <small class="text-muted">Isi hanya jika ingin mengubah password user yang
+                                        dipilih.</small>
+                                </div>
+                            </div>
+
+                            <!-- Pengaturan Struk -->
+                            <div class="mb-lg">
+                                <h3
+                                    style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--bg-tertiary); padding-bottom: 8px;">
+                                    Tampilan Struk</h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">Pesan Footer</label>
+                                    <input type="text" class="form-input" id="receiptFooter"
+                                        placeholder="Contoh: Terima kasih atas kunjungan Anda!"
+                                        oninput="updatePreview()">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Logo Struk</label>
+                                    <input type="file" class="form-input" id="storeLogoInput" accept="image/*"
+                                        onchange="previewLogo(event)">
+                                    <small class="text-muted">Format: PNG/JPG. Max 500KB. </small>
+                                </div>
+
+                                <div class="form-group mt-md">
+                                    <label class="form-label">Ukuran Kertas</label>
+                                    <select class="form-select" id="paperSize" onchange="updatePreview()">
+                                        <option value="58mm">58mm (Kecil)</option>
+                                        <option value="80mm">80mm (Standar)</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <!-- Pembayaran Digital -->
+                            <div class="mb-lg">
+                                <h3
+                                    style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--bg-tertiary); padding-bottom: 8px;">
+                                    Pembayaran Digital (QRIS)</h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">Upload QRIS</label>
+                                    <input type="file" class="form-input" id="qrisInput" accept="image/*"
+                                        onchange="previewQris(event)">
+                                    <small class="text-muted">Format: PNG/JPG. Max 500KB. Akan muncul saat pembayaran
+                                        QRIS.</small>
+                                </div>
+
+                                <div id="qrisPreviewContainer" style="margin-top: 10px; display: none;">
+                                    <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 5px;">Preview QRIS:
+                                    </p>
+                                    <img id="qrisPreview" src="" alt="QRIS Preview"
+                                        style="max-width: 150px; border: 1px solid #ddd; border-radius: 8px;">
+                                </div>
+                            </div>
+
+                            <!-- Backup & Restore -->
+                            <div class="mb-lg">
+                                <h3
+                                    style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--bg-tertiary); padding-bottom: 8px;">
+                                    Backup & Restore Data</h3>
+                                <p class="text-muted mb-md" style="font-size: 0.9em;">
+                                    Simpan data toko Anda secara berkala agar tidak hilang saat cache browser terhapus.
+                                </p>
+
+                                <div class="flex gap-md mb-md">
+                                    <button type="button" class="btn btn-success w-full" onclick="backupData()">
+                                        <span>⬇️</span>
+                                        <span>Backup Data (Download)</span>
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Restore Data (Upload File .json)</label>
+                                    <div class="flex gap-sm">
+                                        <input type="file" class="form-input" id="restoreInput"
+                                            accept="application/json" style="padding: 8px;">
+                                        <button type="button" class="btn btn-warning" onclick="restoreData()">
+                                            <span>⬆️</span>
+                                            <span>Restore</span>
+                                        </button>
+                                    </div>
+                                    <small class="text-danger">PERINGATAN: Restore akan menimpa semua data saat
+                                        ini!</small>
+                                </div>
+                            </div>
+
+                            <!-- Supabase Cloud Sync -->
+                            <div class="mb-lg">
+                                <h3 style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--bg-tertiary); padding-bottom: 8px;">
+                                    ☁️ Sinkronisasi Cloud (Supabase)
+                                </h3>
+                                <p class="text-muted mb-md" style="font-size: 0.9em;">
+                                    Tautkan dan sinkronkan data dengan Supabase untuk backup cloud real-time.
+                                </p>
+
+                                <!-- Status Indikator -->
+                                <div id="supabaseStatusBox" style="padding: 12px; border-radius: 8px; margin-bottom: 16px; background: var(--bg-tertiary); display: flex; align-items: center; gap: 10px;">
+                                    <div id="supabaseStatusDot" style="width: 10px; height: 10px; border-radius: 50%; background: #aaa; flex-shrink: 0;"></div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.9em;" id="supabaseStatusText">Memeriksa koneksi...</div>
+                                        <div style="font-size: 0.78em; color: var(--text-muted);" id="supabaseStatusSub">Project: knamlrrbucyvvixrqunk</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-md" style="flex-wrap: wrap;">
+                                    <button type="button" class="btn btn-primary w-full" onclick="uploadAllToSupabase()" id="btnUploadSupabase">
+                                        <span>⬆️</span>
+                                        <span>Upload Semua Data ke Cloud</span>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary w-full" onclick="downloadFromSupabase()" id="btnDownloadSupabase">
+                                        <span>⬇️</span>
+                                        <span>Tarik Data dari Cloud</span>
+                                    </button>
+                                </div>
+                                <small class="text-muted" style="display: block; margin-top: 8px;">
+                                    Upload: kirim data lokal → cloud. Tarik: ambil data cloud → lokal.
+                                </small>
+                            </div>
+
+                            <div class="flex gap-md" style="justify-content: flex-end;">
+                                <button type="button" class="btn btn-secondary" onclick="resetSettings()">
+                                    <span>↺</span>
+                                    <span>Reset</span>
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <span>💾</span>
+                                    <span>Simpan</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Preview -->
+                <div>
+                    <div class="card" style="position: sticky; top: 20px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Live Preview Struk</h3>
+                        </div>
+                        <div id="previewContainer">
+                            <div id="receiptPreview" class="receipt-preview receipt-58mm">
+                                <!-- Content generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="sync-service.js"></script>
+    <script src="sync-ui.js"></script>
+    <script>
+        // Check Auth
+        requireAdmin();
+        updateSidebarUserInfo();
+        filterNavigation();
+
+        // Initialize sample data if needed
+        initializeData();
+
+        let currentLogo = null;
+        let currentQris = null;
+
+        // Load Settings
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettingsToForm();
+        });
+
+        function loadSettingsToForm() {
+            const settings = getStoreSettings();
+
+            document.getElementById('storeName').value = settings.name;
+            document.getElementById('storeAddress').value = settings.address;
+            document.getElementById('storePhone').value = settings.phone;
+            document.getElementById('receiptFooter').value = settings.footerMessage;
+            document.getElementById('paperSize').value = settings.paperSize || '58mm';
+            document.getElementById('terminalId').value = settings.terminalId || '01';
+            currentLogo = settings.logo;
+            currentQris = settings.qris || null;
+
+            if (currentQris) {
+                document.getElementById('qrisPreview').src = currentQris;
+                document.getElementById('qrisPreviewContainer').style.display = 'block';
+            }
+
+            updatePreview();
+        }
+
+        // ... previewLogo ... 
+
+        // ... updatePreview ...
+
+        function handleSaveSettings(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('storeName').value;
+            const address = document.getElementById('storeAddress').value;
+            const phone = document.getElementById('storePhone').value;
+            const footerMessage = document.getElementById('receiptFooter').value;
+            const paperSize = document.getElementById('paperSize').value;
+
+
+            const settings = {
+                name,
+                address,
+                phone,
+                footerMessage,
+                paperSize,
+                terminalId: document.getElementById('terminalId').value || '01',
+                logo: currentLogo,
+                qris: currentQris
+            };
+
+            saveStoreSettings(settings);
+            // Apply new branding immediately
+            applyAppBranding();
+            showNotification('Pengaturan berhasil disimpan!', 'success');
+        }
+
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 500 * 1024) { // 500KB limit
+                    showNotification('Ukuran file terlalu besar (Max 500KB)', 'warning');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentLogo = e.target.result;
+                    updatePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+
+        function previewQris(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 500 * 1024) { // 500KB limit
+                    showNotification('Ukuran file terlalu besar (Max 500KB)', 'warning');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentQris = e.target.result;
+                    document.getElementById('qrisPreview').src = currentQris;
+                    document.getElementById('qrisPreviewContainer').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updatePreview() {
+            const name = document.getElementById('storeName').value || 'Nama Toko';
+            const address = document.getElementById('storeAddress').value || 'Alamat Toko...';
+            const phone = document.getElementById('storePhone').value;
+            const footer = document.getElementById('receiptFooter').value || 'Terima Kasih';
+            const size = document.getElementById('paperSize').value;
+
+            const preview = document.getElementById('receiptPreview');
+
+            // Adjust width class
+            preview.className = `receipt-preview ${size === '80mm' ? 'receipt-80mm' : 'receipt-58mm'}`;
+
+            // Logo HTML
+            let logoHtml = '';
+            if (currentLogo) {
+                logoHtml = `<div class="text-center mb-1"><img src="${currentLogo}" style="max-height: 50px; filter: grayscale(100%);"></div>`;
+            }
+
+            // Dummy Content
+            preview.innerHTML = `
+                ${logoHtml}
+                <div class="text-center text-bold mb-1" style="font-size: 1.1em; text-transform: uppercase;">${name}</div>
+                <div class="text-center mb-2" style="font-size: 0.9em;">${address}<br>${phone || ''}</div>
+
+                <div class="border-bottom"></div>
+                
+                <div class="receipt-row">
+                    <div>Tgl : ${formatDateShort(new Date().toISOString())}</div>
+                    <div>${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+                <div class="receipt-row mb-1">
+                    <div>No. : #SAMPLE</div>
+                    <div>Kasir: Admin</div>
+                </div>
+
+                <div class="border-bottom mb-2"></div>
+
+                <div class="mb-2">
+                     <div class="mb-1">
+                         <div>Contoh Produk A</div>
+                         <div class="receipt-row">
+                             <div style="padding-left: 10px; color: #444;">2 x Rp 15.000</div>
+                             <div>Rp 30.000</div>
+                         </div>
+                     </div>
+                     <div class="mb-1">
+                         <div>Contoh Produk B</div>
+                         <div class="receipt-row">
+                             <div style="padding-left: 10px; color: #444;">1 x Rp 25.000</div>
+                             <div>Rp 25.000</div>
+                         </div>
+                     </div>
+                </div>
+
+                <div class="border-top border-bottom mb-2" style="padding: 5px 0;">
+                    <div class="receipt-row text-bold" style="font-size: 1.1em;">
+                        <div>TOTAL</div>
+                        <div>Rp 55.000</div>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <div class="receipt-row">
+                        <div>Tunai</div>
+                        <div>Rp 100.000</div>
+                    </div>
+                    <div class="receipt-row">
+                        <div>Kembali</div>
+                        <div>Rp 45.000</div>
+                    </div>
+                </div>
+
+                <div class="text-center" style="margin-top: 20px;">
+                    ${footer.split('\n').map(l => `<div>${l}</div>`).join('')}
+                </div>
+            `;
+        }
+
+        function handleSaveSettings(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('storeName').value;
+            const address = document.getElementById('storeAddress').value;
+            const phone = document.getElementById('storePhone').value;
+            const footerMessage = document.getElementById('receiptFooter').value;
+            const paperSize = document.getElementById('paperSize').value;
+
+            const settings = {
+                name,
+                address,
+                phone,
+                footerMessage,
+                paperSize,
+                terminalId: document.getElementById('terminalId').value || '01',
+                logo: currentLogo
+            };
+
+            saveStoreSettings(settings);
+            // Apply new branding immediately
+            applyAppBranding();
+            showNotification('Pengaturan berhasil disimpan!', 'success');
+        }
+
+        function updateAccount() {
+            const role = document.getElementById('accountRole').value;
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            if (!newPassword && !newUsername) {
+                showNotification('Isi username atau password baru untuk mengubah', 'warning');
+                return;
+            }
+
+            if (confirm(`Yakin ingin mengubah detail akun untuk ${role.toUpperCase()}?`)) {
+                // updateUserCredentials is from app.js
+                const success = updateUserCredentials(role, newUsername || null, newPassword || null);
+
+                if (success) {
+                    showNotification(`Akun ${role} berhasil diperbarui!`, 'success');
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newPassword').value = '';
+                } else {
+                    showNotification('Gagal memperbarui akun', 'danger');
+                }
+            }
+        }
+
+        function resetSettings() {
+            if (confirm('Reset pengaturan ke default?')) {
+                const defaultSettings = {
+                    name: 'Saji Kasir',
+                    address: 'Jl Lintas Sumatra Km 75 Depan Masjid Umar Bin Khattab, Terbanggi Besar, Lampung Tengah',
+                    phone: '',
+                    footerMessage: 'Terima kasih atas kunjungan Anda!',
+                    logo: null,
+                    paperSize: '58mm'
+                };
+                saveStoreSettings(defaultSettings);
+                loadSettingsToForm();
+                showNotification('Pengaturan di-reset', 'info');
+            }
+        }
+
+        // ==========================================
+        // BACKUP & RESTORE LOGIC
+        // ==========================================
+
+        function backupData() {
+            try {
+                // Collect data
+                const data = {
+                    version: '1.0',
+                    timestamp: new Date().toISOString(),
+                    items: localStorage.getItem('items'),
+                    transactions: localStorage.getItem('transactions'),
+                    customers: localStorage.getItem('customers'),
+                    storeSettings: localStorage.getItem('storeSettings'),
+                    users: localStorage.getItem('users'),
+                    theme: localStorage.getItem('theme'),
+                    fontSize: localStorage.getItem('fontSize')
+                };
+
+                // Create blob
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+
+                // Create download link
+                const a = document.createElement('a');
+                a.href = url;
+                const dateStr = new Date().toISOString().slice(0, 10);
+                a.download = `backup_toko_amanah_${dateStr}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showNotification('Backup berhasil didownload!', 'success');
+            } catch (error) {
+                console.error('Backup failed:', error);
+                showNotification('Gagal membuat backup', 'danger');
+            }
+        }
+
+        function restoreData() {
+            const input = document.getElementById('restoreInput');
+            const file = input.files[0];
+
+            if (!file) {
+                showNotification('Pilih file backup (.json) terlebih dahulu', 'warning');
+                return;
+            }
+
+            if (!confirm('PERINGATAN: Tindakan ini akan MENIMPA SEMUA DATA saat ini dengan data dari file backup. Data yang ada sekarang akan hilang permanen. Lanjutkan?')) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    // Basic validation
+                    if (!data.timestamp || !data.items) {
+                        throw new Error('Format file backup tidak valid');
+                    }
+
+                    // Restore data
+                    if (data.items) localStorage.setItem('items', data.items);
+                    if (data.transactions) localStorage.setItem('transactions', data.transactions);
+                    if (data.customers) localStorage.setItem('customers', data.customers);
+                    if (data.storeSettings) localStorage.setItem('storeSettings', data.storeSettings);
+                    if (data.users) localStorage.setItem('users', data.users);
+                    if (data.theme) localStorage.setItem('theme', data.theme);
+
+                    showNotification('Data berhasil direstore! Halaman akan dimuat ulang...', 'success');
+
+                    // Reload to apply changes
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Restore failed:', error);
+                    showNotification('Gagal me-restore data: File korup atau format salah', 'danger');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==========================================
+        // SUPABASE CLOUD SYNC
+        // ==========================================
+
+        async function checkSupabaseStatus() {
+            const dot  = document.getElementById('supabaseStatusDot');
+            const text = document.getElementById('supabaseStatusText');
+            const sub  = document.getElementById('supabaseStatusSub');
+
+            // Tunggu syncService siap
+            await new Promise(r => setTimeout(r, 1500));
+
+            const sb = window.getSupabase ? window.getSupabase() : null;
+
+            if (!sb) {
+                dot.style.background  = '#ef4444';
+                text.textContent      = '❌ Supabase tidak terhubung';
+                sub.textContent       = 'Pastikan koneksi internet aktif';
+                return;
+            }
+
+            try {
+                // Test koneksi dengan query ringan
+                const { error } = await sb.from('items').select('id').limit(1);
+                if (error) throw error;
+
+                dot.style.background  = '#22c55e';
+                text.textContent      = '✅ Terhubung ke Supabase';
+                sub.textContent       = 'Project: knamlrrbucyvvixrqunk • Real-time aktif';
+            } catch (err) {
+                dot.style.background  = '#f59e0b';
+                text.textContent      = '⚠️ Koneksi bermasalah';
+                sub.textContent       = err.message || 'Cek konsol untuk detail';
+            }
+        }
+
+        async function uploadAllToSupabase() {
+            const btn = document.getElementById('btnUploadSupabase');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span><span>Mengupload...</span>';
+
+            try {
+                if (!window.syncService) throw new Error('SyncService belum siap');
+                const total = await window.syncService.pushAllLocalToSupabase();
+                showNotification(`✅ Berhasil upload ${total} data ke Supabase`, 'success');
+            } catch (err) {
+                showNotification('❌ Gagal upload: ' + err.message, 'danger');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>⬆️</span><span>Upload Semua Data ke Cloud</span>';
+            }
+        }
+
+        async function downloadFromSupabase() {
+            const btn = document.getElementById('btnDownloadSupabase');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span><span>Mengambil data...</span>';
+
+            try {
+                if (!window.syncService) throw new Error('SyncService belum siap');
+                await window.syncService.pullAllFromSupabase();
+                showNotification('✅ Data berhasil diambil dari Supabase', 'success');
+            } catch (err) {
+                showNotification('❌ Gagal tarik data: ' + err.message, 'danger');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>⬇️</span><span>Tarik Data dari Cloud</span>';
+            }
+        }
+
+        // Cek status koneksi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', checkSupabaseStatus);
+
+        setActivePage('pengaturan');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Aplikasi Kasir</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo-toko-amanah-new.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Init Dark Mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo-saji-kasir.jpg" alt="Saji Kasir" class="logo">
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="kasir.html" class="nav-link" data-page="kasir">
+                        <span class="nav-icon">🛒</span>
+                        <span>Kasir</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="data-barang.html" class="nav-link" data-page="data-barang">
+                        <span class="nav-icon">📦</span>
+                        <span>Data Barang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pelanggan.html" class="nav-link" data-page="pelanggan">
+                        <span class="nav-icon">👥</span>
+                        <span>Pelanggan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="riwayat-transaksi.html" class="nav-link" data-page="riwayat">
+                        <span class="nav-icon">📜</span>
+                        <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="laporan.html" class="nav-link" data-page="laporan">
+                        <span class="nav-icon">📈</span>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pengaturan.html" class="nav-link" data-page="pengaturan">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Dashboard</h1>
+                <p>Ringkasan penjualan dan statistik toko Anda</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-4 mb-lg">
+                <div class="stat-card animate-fade-in-up delay-100">
+                    <div class="stat-label">Penjualan Hari Ini</div>
+                    <div class="stat-value" id="todayRevenue">Rp 0</div>
+                    <div class="stat-change positive">
+                        <span>↑</span>
+                        <span id="todayTransactions">0 transaksi</span>
+                    </div>
+                </div>
+
+                <div class="stat-card success animate-fade-in-up delay-200">
+                    <div class="stat-label">Penjualan Minggu Ini</div>
+                    <div class="stat-value" id="weekRevenue">Rp 0</div>
+                    <div class="stat-change positive">
+                        <span>↑</span>
+                        <span>7 hari terakhir</span>
+                    </div>
+                </div>
+
+                <div class="stat-card warning animate-fade-in-up delay-300">
+                    <div class="stat-label">Penjualan Bulan Ini</div>
+                    <div class="stat-value" id="monthRevenue">Rp 0</div>
+                    <div class="stat-change positive">
+                        <span>↑</span>
+                        <span>30 hari terakhir</span>
+                    </div>
+                </div>
+
+                <div class="stat-card danger animate-fade-in-up delay-400">
+                    <div class="stat-label">Total Produk</div>
+                    <div class="stat-value" id="totalProducts">0</div>
+                    <div class="stat-change" id="lowStockWarning">
+                        <span>⚠</span>
+                        <span>0 stok rendah</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mb-lg animate-fade-in-up delay-200">
+                <div class="card-header">
+                    <h3 class="card-title">Aksi Cepat</h3>
+                </div>
+                <div class="flex gap-md" style="flex-wrap: wrap;">
+                    <a href="kasir.html" class="btn btn-primary btn-lg" style="flex: 1; min-width: 200px;">
+                        <span>🛒</span>
+                        <span>Transaksi Baru</span>
+                    </a>
+                    <a href="data-barang.html" class="btn btn-success btn-lg" style="flex: 1; min-width: 200px;">
+                        <span>➕</span>
+                        <span>Tambah Produk</span>
+                    </a>
+                    <a href="riwayat-transaksi.html" class="btn btn-secondary btn-lg"
+                        style="flex: 1; min-width: 200px;">
+                        <span>📊</span>
+                        <span>Lihat Laporan</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Analytics Charts -->
+            <div class="grid grid-2 mb-lg">
+                <div class="card animate-fade-in-up delay-300">
+                    <div class="card-header">
+                        <h3 class="card-title">Penjualan Harian (7 Hari)</h3>
+                    </div>
+                    <canvas id="dailySalesChart"></canvas>
+                </div>
+                <div class="card animate-fade-in-up delay-300">
+                    <div class="card-header">
+                        <h3 class="card-title">Tren Bulanan (1 Tahun)</h3>
+                    </div>
+                    <canvas id="monthlySalesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid grid-2">
+                <!-- Top Selling Products -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Produk Terlaris</h3>
+                    </div>
+                    <div id="topSellingList">
+                        <p class="text-muted text-center py-4">Belum ada data penjualan</p>
+                    </div>
+                </div>
+
+                <!-- Low Stock Alert -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Peringatan Stok Rendah</h3>
+                    </div>
+                    <div id="lowStockList">
+                        <p class="text-muted text-center py-4">Semua produk stok mencukupi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card mt-lg">
+                <div class="card-header flex-between">
+                    <h3 class="card-title mb-0">Transaksi Terbaru</h3>
+                    <a href="riwayat-transaksi.html" class="btn btn-sm btn-secondary">Lihat Semua</a>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tanggal</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTransactions">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Belum ada transaksi</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="sync-service.js"></script>
+    <script src="sync-ui.js"></script>
+    <script>
+        // ============================================
+        // AUTHENTICATION & AUTHORIZATION
+        // ============================================
+
+        // Require login and admin role
+        requireAdmin();
+
+        // Update sidebar with user info
+        updateSidebarUserInfo();
+        filterNavigation();
+
+        // Initialize sample data if needed
+        initializeData();
+
+        // ============================================
+        // DASHBOARD LOGIC
+        // ============================================
+
+        // Load Dashboard Data
+        function loadDashboardData() {
+            // Update stats
+            document.getElementById('todayRevenue').textContent = formatCurrency(getTodayRevenue());
+            document.getElementById('weekRevenue').textContent = formatCurrency(getWeekRevenue());
+            document.getElementById('monthRevenue').textContent = formatCurrency(getMonthRevenue());
+
+            const items = getItems();
+            document.getElementById('totalProducts').textContent = items.length;
+
+            const todayTrans = getTodayTransactions();
+            document.getElementById('todayTransactions').textContent = `${todayTrans.length} transaksi`;
+
+            // Low stock warning
+            const lowStock = getLowStockItems();
+            const lowStockWarning = document.getElementById('lowStockWarning');
+            if (lowStock.length > 0) {
+                lowStockWarning.innerHTML = `<span>⚠</span><span>${lowStock.length} stok rendah</span>`;
+                lowStockWarning.classList.add('negative');
+            } else {
+                lowStockWarning.innerHTML = `<span>✓</span><span>Stok aman</span>`;
+                lowStockWarning.classList.remove('negative');
+                lowStockWarning.classList.add('positive');
+                lowStockWarning.classList.add('positive');
+            }
+
+            // Render Charts
+            renderCharts();
+
+            // Top selling products
+            const topSelling = getTopSellingItems(5);
+            const topSellingList = document.getElementById('topSellingList');
+
+            if (topSelling.length > 0) {
+                topSellingList.innerHTML = topSelling.map(item => `
+          <div style="padding: 12px; border-bottom: 1px solid var(--bg-tertiary); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
+              <div style="font-size: 0.875rem; color: var(--text-muted);">${item.category}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 600; color: var(--primary);">${item.totalSold} terjual</div>
+              <div style="font-size: 0.875rem; color: var(--text-muted);">${formatCurrency(item.price)}</div>
+            </div>
+          </div>
+        `).join('');
+            }
+
+            // Low stock items
+            const lowStockList = document.getElementById('lowStockList');
+
+            if (lowStock.length > 0) {
+                lowStockList.innerHTML = lowStock.map(item => `
+          <div style="padding: 12px; border-bottom: 1px solid var(--bg-tertiary); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
+              <div style="font-size: 0.875rem; color: var(--text-muted);">${item.category}</div>
+            </div>
+            <div>
+              <span class="badge badge-${item.stock === 0 ? 'danger' : 'warning'}">
+                Stok: ${item.stock}
+              </span>
+            </div>
+          </div>
+        `).join('');
+            } else {
+                lowStockList.innerHTML = '<p class="text-muted">Semua produk stok mencukup ✓</p>';
+            }
+
+            // Recent transactions
+            const transactions = getTransactions().slice(-5).reverse();
+            const recentTransactions = document.getElementById('recentTransactions');
+
+            if (transactions.length > 0) {
+                recentTransactions.innerHTML = transactions.map(t => `
+          <tr>
+            <td>#${t.id}</td>
+            <td>${formatDateShort(t.date)}</td>
+            <td>${t.items.length} item</td>
+            <td style="font-weight: 600;">${formatCurrency(t.total)}</td>
+            <td><span class="badge badge-success">Selesai</span></td>
+          </tr>
+        `).join('');
+            }
+        }
+
+        // Set active page
+        setActivePage('dashboard');
+
+        // Initialize Charts
+        let dailyChartInstance = null;
+        let monthlyChartInstance = null;
+
+        function renderCharts() {
+            // Daily Chart
+            const dailyData = getDailySalesData(7);
+            const ctxDaily = document.getElementById('dailySalesChart').getContext('2d');
+
+            if (dailyChartInstance) dailyChartInstance.destroy();
+
+            dailyChartInstance = new Chart(ctxDaily, {
+                type: 'bar',
+                data: {
+                    labels: dailyData.labels,
+                    datasets: [{
+                        label: 'Penjualan (Rp)',
+                        data: dailyData.data,
+                        backgroundColor: '#0d9488',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Monthly Chart
+            const monthlyData = getMonthlySalesData(12);
+            const ctxMonthly = document.getElementById('monthlySalesChart').getContext('2d');
+
+            if (monthlyChartInstance) monthlyChartInstance.destroy();
+
+            monthlyChartInstance = new Chart(ctxMonthly, {
+                type: 'line',
+                data: {
+                    labels: monthlyData.labels,
+                    datasets: [{
+                        label: 'Total Penjualan (Rp)',
+                        data: monthlyData.data,
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Load data on page load
+        loadDashboardData();
+
+        // Listen for remote updates
+        window.addEventListener('dataRefreshedFromServer', () => {
+            console.log('🔄 Reloading dashboard due to server sync...');
+            loadDashboardData();
+        });
+    </script>
+</body>
+
+</html>

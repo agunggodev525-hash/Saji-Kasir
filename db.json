@@ -1,0 +1,1225 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "Indomie Goreng",
+      "price": 3500,
+      "stock": 100,
+      "category": "Makanan",
+      "barcode": "8998866200578"
+    },
+    {
+      "id": 2,
+      "name": "Aqua 600ml",
+      "price": 4000,
+      "stock": 80,
+      "category": "Minuman",
+      "barcode": "8886008101053"
+    },
+    {
+      "id": 3,
+      "name": "Pulpen Pilot",
+      "price": 5000,
+      "stock": 50,
+      "category": "Alat Tulis",
+      "barcode": "4902505086057"
+    },
+    {
+      "id": 4,
+      "name": "Kopi Kapal Api",
+      "price": 2000,
+      "stock": 120,
+      "category": "Minuman",
+      "barcode": "8991002101150"
+    },
+    {
+      "id": 5,
+      "name": "Roti Tawar",
+      "price": 15000,
+      "stock": 30,
+      "category": "Makanan",
+      "barcode": "8992770041019"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 4,
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 95,
+          "category": "Makanan",
+          "_meta": {
+            "updatedAt": "2026-01-24T16:47:52.553Z",
+            "syncStatus": "synced",
+            "version": 3,
+            "lastSyncAt": "2026-01-24T16:47:52.813Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 77,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-24T16:47:52.557Z",
+            "syncStatus": "synced",
+            "version": 3,
+            "lastSyncAt": "2026-01-24T16:48:37.038Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 49,
+          "category": "Alat Tulis",
+          "_meta": {
+            "updatedAt": "2026-01-24T16:47:52.557Z",
+            "syncStatus": "synced",
+            "version": 1,
+            "lastSyncAt": "2026-01-24T16:48:37.210Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 120,
+          "category": "Minuman",
+          "quantity": 1
+        }
+      ],
+      "total": 14500,
+      "payment": 20000,
+      "change": 5500,
+      "paymentMethod": "cash",
+      "date": "2026-01-25T03:35:28.267Z",
+      "_meta": {
+        "createdAt": "2026-01-25T03:35:28.267Z",
+        "updatedAt": "2026-01-25T03:35:28.267Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 5,
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 94,
+          "category": "Makanan",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:35:28.268Z",
+            "syncStatus": "synced",
+            "version": 4,
+            "lastSyncAt": "2026-01-25T03:35:28.380Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 119,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:35:28.279Z",
+            "syncStatus": "synced",
+            "version": 1,
+            "lastSyncAt": "2026-01-25T03:35:31.802Z"
+          },
+          "quantity": 1
+        }
+      ],
+      "total": 5500,
+      "payment": 5500,
+      "change": 0,
+      "paymentMethod": "qris",
+      "date": "2026-01-25T03:37:18.012Z",
+      "_meta": {
+        "createdAt": "2026-01-25T03:37:18.012Z",
+        "updatedAt": "2026-01-25T03:37:18.012Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 6,
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 93,
+          "category": "Makanan",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:37:18.012Z",
+            "syncStatus": "synced",
+            "version": 5,
+            "lastSyncAt": "2026-01-25T03:37:18.097Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 76,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:35:28.276Z",
+            "syncStatus": "synced",
+            "version": 4,
+            "lastSyncAt": "2026-01-25T03:35:31.780Z"
+          },
+          "quantity": 1
+        }
+      ],
+      "total": 7500,
+      "payment": 100000,
+      "change": 92500,
+      "paymentMethod": "cash",
+      "date": "2026-01-25T03:39:06.633Z",
+      "_meta": {
+        "createdAt": "2026-01-25T03:39:06.633Z",
+        "updatedAt": "2026-01-25T03:39:06.633Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 7,
+      "items": [
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 75,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:39:06.640Z",
+            "syncStatus": "synced",
+            "version": 5,
+            "lastSyncAt": "2026-01-25T03:39:07.143Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 48,
+          "category": "Alat Tulis",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:35:28.277Z",
+            "syncStatus": "synced",
+            "version": 2,
+            "lastSyncAt": "2026-01-25T03:35:31.793Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 118,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:37:18.018Z",
+            "syncStatus": "synced",
+            "version": 2,
+            "lastSyncAt": "2026-01-25T03:37:22.721Z"
+          },
+          "quantity": 1
+        }
+      ],
+      "total": 11000,
+      "payment": 20000,
+      "change": 9000,
+      "paymentMethod": "cash",
+      "date": "2026-01-25T03:43:01.484Z",
+      "_meta": {
+        "createdAt": "2026-01-25T03:43:01.484Z",
+        "updatedAt": "2026-01-25T03:43:01.484Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 8,
+      "items": [
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 74,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:43:01.485Z",
+            "syncStatus": "synced",
+            "version": 6,
+            "lastSyncAt": "2026-01-25T03:43:01.551Z"
+          },
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 117,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T03:43:01.491Z",
+            "syncStatus": "synced",
+            "version": 3,
+            "lastSyncAt": "2026-01-25T03:43:04.836Z"
+          },
+          "quantity": 3
+        },
+        {
+          "id": 5,
+          "name": "Roti Tawar",
+          "price": 15000,
+          "stock": 30,
+          "category": "Makanan",
+          "quantity": 1
+        }
+      ],
+      "total": 25000,
+      "payment": 25000,
+      "change": 0,
+      "paymentMethod": "qris",
+      "date": "2026-01-25T05:52:52.429Z",
+      "_meta": {
+        "createdAt": "2026-01-25T05:52:52.429Z",
+        "updatedAt": "2026-01-25T05:52:52.429Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769328153890,
+      "nomor_transaksi": "TRX-20260125-01-001",
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "quantity": 1
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "quantity": 1
+        }
+      ],
+      "total": 12500,
+      "payment": 12500,
+      "change": 0,
+      "paymentMethod": "qris",
+      "date": "2026-01-25T08:02:33.890Z",
+      "_meta": {
+        "createdAt": "2026-01-25T08:02:33.890Z",
+        "updatedAt": "2026-01-25T08:02:33.890Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769330701573,
+      "nomor_transaksi": "TRX-20260125-01-002",
+      "items": [
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 79,
+          "category": "Minuman",
+          "_meta": {
+            "updatedAt": "2026-01-25T08:02:33.891Z",
+            "syncStatus": "pending",
+            "version": 1
+          },
+          "quantity": 1
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 49,
+          "category": "Alat Tulis",
+          "_meta": {
+            "updatedAt": "2026-01-25T08:02:33.891Z",
+            "syncStatus": "pending",
+            "version": 1
+          },
+          "quantity": 1
+        }
+      ],
+      "total": 9000,
+      "payment": 10000,
+      "change": 1000,
+      "paymentMethod": "cash",
+      "date": "2026-01-25T08:45:01.573Z",
+      "_meta": {
+        "createdAt": "2026-01-25T08:45:01.573Z",
+        "updatedAt": "2026-01-25T08:45:01.573Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769517595647,
+      "nomor_transaksi": "TRX-20260127-01-001",
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 3
+        }
+      ],
+      "subtotal": 10500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 10500,
+      "payment": 20000,
+      "change": 9500,
+      "paymentMethod": "cash",
+      "date": "2026-01-27T12:39:55.647Z",
+      "_meta": {
+        "createdAt": "2026-01-27T12:39:55.647Z",
+        "updatedAt": "2026-01-27T12:39:55.647Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769518289164,
+      "nomor_transaksi": "TRX-20260127-01-002",
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 3
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "barcode": "4902505086057",
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 120,
+          "category": "Minuman",
+          "barcode": "8991002101150",
+          "quantity": 1
+        },
+        {
+          "id": 5,
+          "name": "Roti Tawar",
+          "price": 15000,
+          "stock": 30,
+          "category": "Makanan",
+          "barcode": "8992770041019",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 32500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 32500,
+      "payment": 100000,
+      "change": 67500,
+      "paymentMethod": "cash",
+      "date": "2026-01-27T12:51:29.164Z",
+      "_meta": {
+        "createdAt": "2026-01-27T12:51:29.164Z",
+        "updatedAt": "2026-01-27T12:51:29.164Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769521449081,
+      "nomor_transaksi": "TRX-20260127-01-003",
+      "items": [
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 120,
+          "category": "Minuman",
+          "barcode": "8991002101150",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 2000,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 2000,
+      "payment": 10000,
+      "change": 8000,
+      "paymentMethod": "cash",
+      "date": "2026-01-27T13:44:09.081Z",
+      "_meta": {
+        "createdAt": "2026-01-27T13:44:09.081Z",
+        "updatedAt": "2026-01-27T13:44:09.081Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769521483873,
+      "nomor_transaksi": "TRX-20260127-01-004",
+      "items": [
+        {
+          "id": 5,
+          "name": "Roti Tawar",
+          "price": 15000,
+          "stock": 30,
+          "category": "Makanan",
+          "barcode": "8992770041019",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 15000,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 15000,
+      "payment": 20000,
+      "change": 5000,
+      "paymentMethod": "cash",
+      "date": "2026-01-27T13:44:43.873Z",
+      "_meta": {
+        "createdAt": "2026-01-27T13:44:43.873Z",
+        "updatedAt": "2026-01-27T13:44:43.873Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769521506774,
+      "nomor_transaksi": "TRX-20260127-01-005",
+      "items": [
+        {
+          "id": 5,
+          "name": "Roti Tawar",
+          "price": 15000,
+          "stock": 30,
+          "category": "Makanan",
+          "barcode": "8992770041019",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 15000,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 15000,
+      "payment": 20000,
+      "change": 5000,
+      "paymentMethod": "cash",
+      "date": "2026-01-27T13:45:06.774Z",
+      "_meta": {
+        "createdAt": "2026-01-27T13:45:06.774Z",
+        "updatedAt": "2026-01-27T13:45:06.774Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769526826616,
+      "nomor_transaksi": "TRX-20260127-01-006",
+      "items": [
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 1
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "barcode": "4902505086057",
+          "quantity": 1
+        },
+        {
+          "id": 5,
+          "name": "Roti Tawar",
+          "price": 15000,
+          "stock": 30,
+          "category": "Makanan",
+          "barcode": "8992770041019",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 24000,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 24000,
+      "payment": 100000,
+      "change": 76000,
+      "paymentMethod": "cash",
+      "date": "2026-01-27T15:13:46.616Z",
+      "_meta": {
+        "createdAt": "2026-01-27T15:13:46.616Z",
+        "updatedAt": "2026-01-27T15:13:46.616Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769729369082,
+      "nomor_transaksi": "TRX-20260130-01-001",
+      "items": [
+        {
+          "name": "Pembayaran Hutang",
+          "price": 10000,
+          "quantity": 1,
+          "id": "DEBT_PAY",
+          "category": "Keuangan"
+        }
+      ],
+      "total": 10000,
+      "payment": 10000,
+      "change": 0,
+      "customerId": 2,
+      "customerName": "iqbal punya",
+      "transactionType": "DEBT_PAYMENT",
+      "note": "Pembayaran hutang sisa Rp Rp 0",
+      "paymentMethod": "cash",
+      "date": "2026-01-29T23:29:29.082Z",
+      "_meta": {
+        "createdAt": "2026-01-29T23:29:29.082Z",
+        "updatedAt": "2026-01-29T23:29:29.082Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1769734620327,
+      "nomor_transaksi": "TRX-20260130-01-002",
+      "items": [
+        {
+          "name": "Indomie soto mie",
+          "barcode": "",
+          "category": "Makanan",
+          "price": 2500,
+          "stock": 40,
+          "image": "data:image/jpeg;base64,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2dna0OoysqpjdkmRWxx82RgZ7Yzjv3rRgWKOxkiiiWJUwFRRwB0/H6nmubFhrOnncqSDH4irNnrUiSGG7iKeYNu8dM9s+lfP46OKnvH3fImFOENkEJxI34/+htXofgsY0V/edu2Ow/OvPoVxKwPoexP8bV6D4MwNGfBGfPbOM+gqsu/3j5GcPiOgooor6M3CiiigAooooAKKKKACiiigAooooAKKKKACkIzS0UAU59Ls7k5mt4pD/tIDUC6DpyHKWcKn/ZjArTooAqJp8CDhAPwqUW0a9FFTUUAReQnpS+SnpUlFAEfkp6UnkJ6VLRQBF5Cf3RR5CegqWigCL7On90UfZ0/uipaKAIvs6f3RR5CelS0UAReQnpR5CelS0UAReQnpSG3Q/wAIqaigCs1lE3VRUT6Tav8AfhRvqoNXqKAMwaBpgOfsNvn/AK5L/hV6G3jgULGioo7AYqWigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//2Q==",
+          "id": 6,
+          "_meta": {
+            "createdAt": "2026-01-27T15:34:11.798Z",
+            "updatedAt": "2026-01-30T00:15:50.085Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-01-30T00:15:50.126Z",
+            "version": 3
+          },
+          "buyPrice": 0,
+          "quantity": 2
+        },
+        {
+          "name": "Indomie Goreng",
+          "barcode": "",
+          "category": "Makanan",
+          "price": 3500,
+          "stock": 30,
+          "image": "data:image/jpeg;base64,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",
+          "id": 11,
+          "_meta": {
+            "createdAt": "2026-01-27T16:20:35.835Z",
+            "updatedAt": "2026-01-27T16:20:35.835Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-01-27T16:20:35.889Z",
+            "version": 1
+          },
+          "quantity": 1
+        },
+        {
+          "name": "Kopi Kapal Api",
+          "barcode": "",
+          "category": "Minuman",
+          "price": 1000,
+          "stock": 35,
+          "image": "data:image/jpeg;base64,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",
+          "id": 10,
+          "_meta": {
+            "createdAt": "2026-01-27T16:19:20.719Z",
+            "updatedAt": "2026-01-30T00:15:22.839Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-01-30T00:15:22.879Z",
+            "version": 2
+          },
+          "buyPrice": 0,
+          "quantity": 3
+        },
+        {
+          "name": "Pulpen Pilot",
+          "barcode": "",
+          "category": "Alat Tulis",
+          "price": 3500,
+          "stock": 15,
+          "image": "data:image/jpeg;base64,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H/oLV7uL/wB1X9djjpfxD0aiiivCOwKKKKACiiigAooooAKKKKACiiigAooooAKKKKAClpKWgBKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigApaSloA8D8a/8eurf9h+b+RrtfhKf9I13/eg/wDQWrivGv8Ax6at/wBjBN/I12vwm/4+dd/3oP8A0Fq9zFf7qv67HHT+M9GooorwzsCiiigAooooAKKKKACiiigAooooAKKKKACiiigApaSloASiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKWkpaAPA/GvFrq3/Yfm/ka7X4Tf8fOu/wC/B/6C1cV42/49dW/7D838jXa/CX/j413/AH4P/QWr28V/uy/rsclP4z0aiiivEOsKKKKACiiigAooooAKKKKACiiigAooooAKKKKAClpKWgBKKWkoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAClpKWgDwPxscWurf8AYfm/ka7T4S/8fOu/71v/AOgtXF+Nv+PPVv8AsYJv5Gu0+Eg/0jXT/twf+gtXt4r/AHZf12OSn8Z6PRRRXiHWFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABS0lLQAlFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUtJRQB4X450+9FvqAFrK32jXpDFtXO/IIGMdz6V3vww0u5sLPU5rqFonmuFAVuDhUHUdvvGn+MbSRpYHJXbFq1pcAD+6SI+f+BZro9DiCWUkuGDTzO7bvY7QR7YUV01MVKpBU2jONNRdzRooormNAooooAKKKKACiiigAooooAKKKKACiiigAooooAKWkpaACkoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDnPF8RNtbvFFveS6tkbBGTtnRwMH2Dfn6cjYgdLe3it1cv5aBM9zgYzU81tBcACaJXAORuHQ05Yo0GERVHsMUAMVmbtUgBpaKACiiigAooooAKKKKACiiigAooooAKKKKACiiigApaSloASiiigAooooAKKKKACiiigAooooAKKKKACiiigAoxRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFLRRQB/9k=",
+          "id": 9,
+          "_meta": {
+            "createdAt": "2026-01-27T16:16:23.542Z",
+            "updatedAt": "2026-01-30T00:15:26.258Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-01-30T00:15:26.294Z",
+            "version": 2
+          },
+          "buyPrice": 0,
+          "quantity": 2
+        },
+        {
+          "name": "Aqua 600ml",
+          "barcode": "",
+          "category": "Minuman",
+          "price": 5000,
+          "stock": 20,
+          "image": "data:image/jpeg;base64,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K9BiT5s9KpIiTeIQ4bDRRtkA/Qc/ma2WKq669OyMVhaUdl17s1qKKK4zsCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKhuyBZzZIA2Ec9OlTVn67J5ejz88kYH8/wClNbiexR0Rt9kIo5GTa23bKNrjGOorbyAOorI0aziFqilSdnyq2cHAAHUVsCNAANo46Z5q52uTC9iJpUCghtwJx8qlv5VG7lX4SRh7bcfzzU7Hk0wmpQ2QPcRRqVkgmfIztETPn8siqek3gl1W4iWPapXdzwQBgDI6jqT+VaingVlRAw+JBgD96pBPsATj+VUrNMl7o26KKKzNAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACszxCrnSXMWDIpDKp/i9vyzWnWX4gAOnpkZ/eqf51UPiRM/hZLpg22sZC5yD/ADq7k9xVKwBa2Ry2HbliP4vrVs5AOR26iiW4R2GZP90/pTST/dNAOaU80ACfQ1nMXfX4hsAABJdTkdOh6Yz/AI+lWhMzvsgUSHu+flXj17/QVVulkTVLXc+VLjGD347VUSZGzRRRWZoFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAVn62qvpxVuGLDYc4w3brxWhWdrsMs2msIQC4YEDdjP096qHxImXwsj0+dlhVJRHGV4yz4z344/r+NX3fbGWALLj+Hn+VU9N81baNGQgj+8Cv8ASrrFuhUn3BFOW4o7ER64wD7014Q/DMxX+6OBSq+5cmGRPY4P8jSs6hcjcfbbj+dAwjUqcKQAO22qUsY/tmFpJh97hAmM8cc5+nar0TK/zK6n6Gs+QXE2swboysStkEleOM9iT2pxJkbNFFFZmgUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABVDWULWalRkpIG2jqfp71frM8QRtJpMgXA5HJOB6VUfiRMvhY+wl/wBCi3I8e1QvzYycfQmrJmjxjePzqtZRtHbqrHBHvVljgffNN7iWxGHT++v50u9f7w/OkyKM0DHpgnqPzrMmgSXxBbMIvLZCSXODvGO3PH5VoqeetVXYrrdupB+bdg4OPu049SZdDUooorM0CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKiuBmEjYX7gD1HIqWigDFS7nRzHJbzLyQp8snPoSQMVJLeqkDP5bs6g4UqRuIrWoxVcxPKcja3eoKqyylnZ8lkMgAXk4HJ4/p+laFhdsyFboqpTG0mUMWwMZOD1rd2j0pNi+gqnO/QShbqZMt9HDukyzqp4VAWJzz0Az+VV4L25ubwyGxfan3HZCDnkEjPTg1vbV9BS4HpU8w+UrRPMw5Uj61ZXOOaWipKCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA/9k=",
+          "id": 8,
+          "_meta": {
+            "createdAt": "2026-01-27T16:15:24.868Z",
+            "updatedAt": "2026-01-30T00:15:30.123Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-01-30T00:15:30.191Z",
+            "version": 2
+          },
+          "buyPrice": 0,
+          "quantity": 2
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 2
+        }
+      ],
+      "subtotal": 36500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 36500,
+      "payment": 100000,
+      "change": 63500,
+      "paymentMethod": "cash",
+      "date": "2026-01-30T00:57:00.327Z",
+      "_meta": {
+        "createdAt": "2026-01-30T00:57:00.327Z",
+        "updatedAt": "2026-01-30T00:57:00.327Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1770477668276,
+      "nomor_transaksi": "TRX-20260207-01-001",
+      "items": [
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "barcode": "4902505086057",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 1
+        },
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 12500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 12500,
+      "payment": 20000,
+      "change": 7500,
+      "paymentMethod": "cash",
+      "date": "2026-02-07T15:21:08.276Z",
+      "_meta": {
+        "createdAt": "2026-02-07T15:21:08.276Z",
+        "updatedAt": "2026-02-07T15:21:08.276Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1770479952503,
+      "nomor_transaksi": "TRX-20260207-01-002",
+      "items": [
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 2
+        },
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 2
+        },
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "barcode": "4902505086057",
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 120,
+          "category": "Minuman",
+          "barcode": "8991002101150",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 22000,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 22000,
+      "payment": 100000,
+      "change": 78000,
+      "paymentMethod": "cash",
+      "date": "2026-02-07T15:59:12.503Z",
+      "_meta": {
+        "createdAt": "2026-02-07T15:59:12.503Z",
+        "updatedAt": "2026-02-07T15:59:12.503Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1770485270530,
+      "nomor_transaksi": "TRX-20260208-01-001",
+      "items": [
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "barcode": "4902505086057",
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 120,
+          "category": "Minuman",
+          "barcode": "8991002101150",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 7000,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 7000,
+      "payment": 20000,
+      "change": 13000,
+      "paymentMethod": "cash",
+      "date": "2026-02-07T17:27:50.530Z",
+      "_meta": {
+        "createdAt": "2026-02-07T17:27:50.530Z",
+        "updatedAt": "2026-02-07T17:27:50.530Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1770739225531,
+      "nomor_transaksi": "TRX-20260210-01-001",
+      "items": [
+        {
+          "id": 3,
+          "name": "Pulpen Pilot",
+          "price": 5000,
+          "stock": 50,
+          "category": "Alat Tulis",
+          "barcode": "4902505086057",
+          "quantity": 2
+        },
+        {
+          "id": 4,
+          "name": "Kopi Kapal Api",
+          "price": 2000,
+          "stock": 120,
+          "category": "Minuman",
+          "barcode": "8991002101150",
+          "quantity": 2
+        },
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 17500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 17500,
+      "payment": 100000,
+      "change": 82500,
+      "paymentMethod": "cash",
+      "date": "2026-02-10T16:00:25.531Z",
+      "_meta": {
+        "createdAt": "2026-02-10T16:00:25.531Z",
+        "updatedAt": "2026-02-10T16:00:25.531Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1778559772923,
+      "nomor_transaksi": "TRX-20260512-01-001",
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 7500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 7500,
+      "payment": 10000,
+      "change": 2500,
+      "paymentMethod": "cash",
+      "date": "2026-05-12T04:22:52.923Z",
+      "_meta": {
+        "createdAt": "2026-05-12T04:22:52.923Z",
+        "updatedAt": "2026-05-12T04:22:52.923Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1778559923185,
+      "nomor_transaksi": "TRX-20260512-01-002",
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 7500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 7500,
+      "payment": 20000,
+      "change": 12500,
+      "paymentMethod": "cash",
+      "date": "2026-05-12T04:25:23.185Z",
+      "_meta": {
+        "createdAt": "2026-05-12T04:25:23.185Z",
+        "updatedAt": "2026-05-12T04:25:23.185Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    },
+    {
+      "id": 1778567781024,
+      "nomor_transaksi": "TRX-20260512-01-003",
+      "items": [
+        {
+          "id": 1,
+          "name": "Indomie Goreng",
+          "price": 3500,
+          "stock": 100,
+          "category": "Makanan",
+          "barcode": "8998866200578",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "Aqua 600ml",
+          "price": 4000,
+          "stock": 80,
+          "category": "Minuman",
+          "barcode": "8886008101053",
+          "quantity": 1
+        },
+        {
+          "name": "Indomie Goreng",
+          "category": "Makanan",
+          "price": 3000,
+          "buyPrice": 3000,
+          "stock": 3500,
+          "image": "data:image/jpeg;base64,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",
+          "id": 6,
+          "_meta": {
+            "createdAt": "2026-05-12T04:21:34.109Z",
+            "updatedAt": "2026-05-12T04:36:33.771Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-05-12T04:36:33.782Z",
+            "version": 2
+          },
+          "barcode": "",
+          "quantity": 3
+        },
+        {
+          "name": "Aqua 600 ml",
+          "category": "Minuman",
+          "price": 3500,
+          "buyPrice": 3500,
+          "stock": 4000,
+          "image": "data:image/jpeg;base64,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iiigAooooAKKKKACuM+KFrd3Xhy1FlGJJY76OTBIAGA3JJ4x0rs6wfF0vlaZD+4aZmnAUDthWJOe3APPvWtL40RU+FnmVtZ+N9MVHjsWQNGFd4kjmaXknc33snDYz3AGelatte+LI4sGwvQwfcsn2ElgcMOPlx/Ee34131ppumviZbOESMAC6oAxH1FauxVQKowAMACur60lpyJnLLDSnqptHit9putyTGf+zb/zS28sLdwd2c56etS2OpeKbDbEkGrWyqAitFbl1UcdYnGxuAem0ksSSa9YuSAQNg57802Nc9yPoa0li+de9FGdLCeyfuyZ53aya5OOPDmjajJjMk01h5Uvrgh9m4/7oI96mXVNdiH+i+GUsHB/1ttpbA/mQRXpCJgfeb86eE9z+dZLEpbxTLqYXn2k16Hk163iK/Yvc2Gp3BzkA277QfYYwPwFUJtM8RSjCaVfwjsRbyAj8cV7SUHv+dNKLjpWv192soo545bCMuZybfmeONovjO+8xVguMzRGGQeSkQMZAGzkDCjHA6DJxjJzc8L6Z4gi+Ieny6uS5jMrODOjlC0bc4UnGeP0r1CWOGSN0liSSPBLKygg/nXFwXAuviFaW9tMYltl2tDuIQ/KWOFHH3WFQqvtIyVktDq5HBq8m9T0GiiivPOwKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKztehM+i3CiUxBAJGcDJ2qQzD8QCPxrRprqroyMAysMEHuKcXZpiaurGDoFxusIgWZio2kt1JHB/Wt/qua4vw7qKeRF5snMuGTaudwwNzcdBuJ/Meorr4po2iBEikfWtq0bSM6TvEgugNoPvUcRp90y7DhgfxqKI81K2G9y6h4p4qJCMdafvUep+gzUMoeaYx4pS6hck9fxpkjKBywH1NCGVLqQJbytnHGBXJ+CVe/8AFGp6iwjeOMmNXH1wpH1UV0Osz/ZtPMwRpMt8qqpbLdAOOmTxz61mfDbTxY6FMWTbM02HbdkMAoI+nWumPu0pMwetRI7CiiiuQ6AooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqG8na2sp50jMrRRs6oOrEDOKmrO16d7fSZHjYBgVPPdQwLAe+0NVRV2kJuyuctpRgi1H7MEVc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",
+          "id": 7,
+          "_meta": {
+            "createdAt": "2026-05-12T04:21:34.116Z",
+            "updatedAt": "2026-05-12T04:37:12.760Z",
+            "syncStatus": "synced",
+            "lastSyncAt": "2026-05-12T04:37:12.788Z",
+            "version": 2
+          },
+          "barcode": "",
+          "quantity": 2
+        }
+      ],
+      "subtotal": 23500,
+      "discount": 0,
+      "manualDiscount": 0,
+      "customerDiscount": 0,
+      "customerDiscountPercent": 0,
+      "discountType": "rupiah",
+      "discountInput": 0,
+      "tax": 0,
+      "customerId": null,
+      "customerName": null,
+      "customerType": null,
+      "total": 23500,
+      "payment": 50000,
+      "change": 26500,
+      "paymentMethod": "cash",
+      "date": "2026-05-12T06:36:21.024Z",
+      "_meta": {
+        "createdAt": "2026-05-12T06:36:21.024Z",
+        "updatedAt": "2026-05-12T06:36:21.024Z",
+        "syncStatus": "pending",
+        "lastSyncAt": null,
+        "version": 1
+      }
+    }
+  ]
+}

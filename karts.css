@@ -1,0 +1,544 @@
+/* KARTS THEME STYLES */
+body:has(.karts-layout) {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background: #E8E8E8; /* Darker orange wrapper if needed, or gray */
+    height: 100vh;
+    overflow: hidden;
+}
+
+.karts-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background: #F4F4F4;
+}
+
+/* TOP HEADER */
+.karts-header {
+    background: var(--primary);
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    padding: 0 15px;
+    flex-shrink: 0;
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.karts-menu-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.karts-store-name {
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.karts-search-container {
+    position: relative;
+    margin-left: 10px;
+}
+
+.karts-search-container input {
+    width: 300px;
+    padding: 8px 15px 8px 35px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.karts-search-container .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 14px;
+}
+
+.karts-icon-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.karts-icon-btn.active {
+    background: white;
+    color: var(--primary);
+}
+
+.karts-category-dropdown {
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.karts-category-dropdown .dropdown-arrow {
+    font-size: 10px;
+}
+
+.karts-order-list {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* MAIN CONTENT */
+.karts-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* LEFT PANEL (Products) */
+.karts-left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #EAEAEA;
+}
+
+.karts-category-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #EAEAEA;
+    border-bottom: 1px solid #ddd;
+    gap: 15px;
+}
+
+.karts-cat-icon {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+}
+
+.karts-cat-btn {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.karts-cat-btn.active {
+    color: var(--primary);
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary);
+}
+
+.karts-product-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    align-content: start;
+}
+
+/* Karts Product Card */
+.karts-product-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.1s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 180px;
+}
+
+.karts-product-card:active {
+    transform: scale(0.97);
+}
+
+.karts-product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 15px auto;
+    background: #f0f0f0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.karts-product-name {
+    font-size: 14px;
+    color: #333;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.karts-product-price {
+    font-size: 13px;
+    color: #666;
+    text-align: left;
+    margin-top: auto;
+}
+
+/* RIGHT PANEL (Cart) */
+.karts-right-panel {
+    width: 350px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+    z-index: 10;
+}
+
+.karts-cart-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.karts-customer-info {
+    font-size: 13px;
+    color: #333;
+}
+.karts-customer-info .kasir-name {
+    color: #999;
+    font-size: 11px;
+}
+
+.karts-order-number {
+    background: #258093;
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.karts-cart-body {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.karts-empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+}
+
+.karts-empty-state h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.karts-empty-state p {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+}
+
+.karts-cart-footer {
+    border-top: 1px solid #eee;
+}
+
+.karts-cart-actions {
+    display: flex;
+    padding: 10px 0;
+}
+
+.karts-action-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-right: 1px solid #eee;
+    font-size: 12px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px 0;
+}
+.karts-action-btn:last-child {
+    border-right: none;
+}
+.karts-action-btn .icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+    display: inline-block;
+}
+
+.karts-pay-btn-container {
+    padding: 0 0;
+}
+
+.karts-pay-btn {
+    width: 100%;
+    background: var(--primary); /* fallback */
+    background: var(--primary);
+    border: none;
+    height: 60px;
+    display: flex;
+    cursor: pointer;
+}
+
+.pay-left {
+    width: 30%;
+    background: #EAEAEA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #999;
+}
+
+.pay-count {
+    border: 1px solid #ccc;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.pay-text {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.pay-right {
+    width: 70%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* CART ITEM LIST */
+.karts-cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.karts-item-details {
+    flex: 1;
+}
+
+.karts-item-name {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.karts-item-price {
+    color: var(--primary);
+    font-size: 13px;
+}
+
+.karts-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.karts-qty-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--primary);
+}
+
+.karts-qty-input {
+    width: 30px;
+    text-align: center;
+    border: none;
+    font-size: 14px;
+}
+
+/* Override Default Card Styles for Karts Layout */
+.karts-layout .product-card-item {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.1s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 180px;
+    border: none;
+    position: relative;
+}
+.karts-layout .product-card-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.karts-layout .product-image-container, .karts-layout .product-image-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 15px auto;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+.karts-layout .product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.karts-layout .product-name {
+    font-size: 14px;
+    color: #333;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+.karts-layout .product-price {
+    font-size: 13px;
+    color: #999;
+    text-align: left;
+    margin-top: auto;
+    font-weight: normal;
+}
+.karts-layout .product-stock {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.1);
+    color: #333;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+.karts-layout .product-category {
+    display: none; /* Hide category in Karts card */
+}
+
+/* Hide Default Sidebar on Kasir Page */
+body:has(.karts-layout) .sidebar {
+    display: none !important;
+}
+body:has(.karts-layout) .menu-toggle {
+    display: none !important;
+}
+body:has(.karts-layout) .app-container {
+    padding: 0;
+}
+
+/* Switch Toggle for Product Detail */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: var(--primary);
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary);
+}
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+.slider.round {
+  border-radius: 24px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Modal Right Side Animation override */
+.karts-right-modal {
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0;
+}
+.karts-right-modal .modal-content {
+    animation: slideInRight 0.3s ease-out;
+    margin: 0;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}

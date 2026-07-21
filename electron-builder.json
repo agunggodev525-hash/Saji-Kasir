@@ -1,0 +1,27 @@
+{
+    "appId": "com.amanah.kasir",
+    "productName": "Aplikasi Kasir Toko Amanah",
+    "asar": false,
+    "directories": {
+        "output": "dist"
+    },
+    "win": {
+        "target": "nsis",
+        "icon": "logo-toko-amanah-new.png"
+    },
+    "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true
+    },
+    "files": [
+        "**/*",
+        "!dist/**/*",
+        "!android_project/**/*",
+        "!.idea/**/*",
+        "!.git/**/*",
+        "!package-lock.json",
+        "!node_modules/electron-builder/**/*"
+    ]
+}

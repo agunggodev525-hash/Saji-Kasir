@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan - Aplikasi Kasir</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        // Init Dark Mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+    <!-- Libraries for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo-saji-kasir.jpg" alt="Saji Kasir" class="logo">
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="kasir.html" class="nav-link" data-page="kasir">
+                        <span class="nav-icon">🛒</span>
+                        <span>Kasir</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="data-barang.html" class="nav-link" data-page="data-barang">
+                        <span class="nav-icon">📦</span>
+                        <span>Data Barang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pelanggan.html" class="nav-link" data-page="pelanggan">
+                        <span class="nav-icon">👥</span>
+                        <span>Pelanggan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="riwayat-transaksi.html" class="nav-link" data-page="riwayat">
+                        <span class="nav-icon">📜</span>
+                        <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="laporan.html" class="nav-link active" data-page="laporan">
+                        <span class="nav-icon">📈</span>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pengaturan.html" class="nav-link" data-page="pengaturan">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Laporan Penjualan</h1>
+                <p>Analisis dan ringkasan transaksi</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="card mb-lg">
+                <div class="card-header">
+                    <h3 class="card-title">Filter Periode</h3>
+                </div>
+                <div class="flex gap-md" style="flex-wrap: wrap; justify-content: flex-start;">
+                    <button class="btn btn-primary" onclick="filterByPeriod('today')" id="filterToday"
+                        style="flex: 1; min-width: 120px; justify-content: center;">
+                        <span>📅</span>
+                        <span>Hari Ini</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="filterByPeriod('week')" id="filterWeek"
+                        style="flex: 1; min-width: 120px; justify-content: center;">
+                        <span>📆</span>
+                        <span>Minggu Ini</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="filterByPeriod('month')" id="filterMonth"
+                        style="flex: 1; min-width: 120px; justify-content: center;">
+                        <span>📊</span>
+                        <span>Bulan Ini</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="filterByPeriod('all')" id="filterAll"
+                        style="flex: 1; min-width: 120px; justify-content: center;">
+                        <span>🗂️</span>
+                        <span>Semua</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="grid grid-3 mb-lg">
+                <div class="stat-card">
+                    <div class="stat-label">Total Transaksi</div>
+                    <div class="stat-value" id="totalTransactions">0</div>
+                    <div class="stat-change positive">
+                        <span>📋</span>
+                        <span id="periodLabel">Hari ini</span>
+                    </div>
+                </div>
+
+                <div class="stat-card success">
+                    <div class="stat-label">Total Pendapatan</div>
+                    <div class="stat-value" id="totalRevenue">Rp 0</div>
+                    <div class="stat-change positive">
+                        <span>💰</span>
+                        <span id="periodLabelRevenue">Hari ini</span>
+                    </div>
+                </div>
+
+                <div class="stat-card info">
+                    <div class="stat-label">Total Keuntungan</div>
+                    <div class="stat-value" id="totalProfit">Rp 0</div>
+                    <div class="stat-change positive">
+                        <span>📈</span>
+                        <span>Laba Bersih</span>
+                    </div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-label">Rata-rata Transaksi</div>
+                    <div class="stat-value" id="avgTransaction">Rp 0</div>
+                    <div class="stat-change">
+                        <span>📈</span>
+                        <span>Per transaksi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Chart -->
+            <div class="card mb-lg">
+                <div class="card-header">
+                    <h3 class="card-title">Grafik Penjualan</h3>
+                </div>
+                <div style="height: 300px;">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="card mb-lg">
+                <div class="card-header">
+                    <h3 class="card-title">Export Laporan</h3>
+                </div>
+                <div class="flex gap-md">
+                    <button class="btn btn-success btn-lg" onclick="exportToExcel()">
+                        <span>📊</span>
+                        <span>Export ke Excel</span>
+                    </button>
+                    <button class="btn btn-danger btn-lg" onclick="exportToPDF()">
+                        <span>📄</span>
+                        <span>Export ke PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Detail Transaksi</h3>
+                </div>
+                <div class="table-container">
+                    <table id="reportTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tanggal & Waktu</th>
+                                <th>Jumlah Item</th>
+                                <th>Total</th>
+                                <th>Bayar</th>
+                                <th>Kembalian</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Belum ada data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detail Transaksi</h3>
+                <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div id="detailContent">
+                <!-- Details loaded here -->
+            </div>
+            <div class="mt-lg text-right">
+                <button class="btn btn-secondary w-full" onclick="closeModal('detailModal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="sync-service.js"></script>
+    <script src="sync-ui.js"></script>
+    <script>
+        // ============================================
+        // AUTHENTICATION & AUTHORIZATION
+        // ============================================
+
+        // Require login (accessible by all authenticated users)
+        // Require login and admin role
+        requireAdmin();
+
+        // Update sidebar with user info
+        updateSidebarUserInfo();
+        filterNavigation();
+
+        // Initialize sample data if needed
+        initializeData();
+
+        // ============================================
+        // LAPORAN PAGE LOGIC
+        // ============================================
+
+        let currentFilter = 'today';
+        let filteredTransactions = [];
+        let reportChart = null;
+
+        // Filter transactions by period
+        function filterByPeriod(period) {
+            currentFilter = period;
+            const transactions = getTransactions();
+            const now = new Date();
+
+            // Update button states
+            document.querySelectorAll('#filterToday, #filterWeek, #filterMonth, #filterAll').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+
+            let periodLabel = '';
+
+            switch (period) {
+                case 'today':
+                    const today = now.toDateString();
+                    filteredTransactions = transactions.filter(t =>
+                        new Date(t.date).toDateString() === today
+                    );
+                    periodLabel = 'Hari ini';
+                    document.getElementById('filterToday').classList.remove('btn-secondary');
+                    document.getElementById('filterToday').classList.add('btn-primary');
+                    break;
+
+                case 'week':
+                    const weekAgo = new Date(now);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    filteredTransactions = transactions.filter(t =>
+                        new Date(t.date) >= weekAgo
+                    );
+                    periodLabel = 'Minggu ini';
+                    document.getElementById('filterWeek').classList.remove('btn-secondary');
+                    document.getElementById('filterWeek').classList.add('btn-primary');
+                    break;
+
+                case 'month':
+                    const monthAgo = new Date(now);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    filteredTransactions = transactions.filter(t =>
+                        new Date(t.date) >= monthAgo
+                    );
+                    periodLabel = 'Bulan ini';
+                    document.getElementById('filterMonth').classList.remove('btn-secondary');
+                    document.getElementById('filterMonth').classList.add('btn-primary');
+                    break;
+
+                case 'all':
+                    filteredTransactions = transactions;
+                    periodLabel = 'Semua waktu';
+                    document.getElementById('filterAll').classList.remove('btn-secondary');
+                    document.getElementById('filterAll').classList.add('btn-primary');
+                    break;
+            }
+
+            updateReport(periodLabel);
+            updateChart(period);
+        }
+
+        // Update report display
+        function updateReport(periodLabel) {
+            // Update summary stats
+            const totalTrans = filteredTransactions.length;
+            const totalRev = filteredTransactions.reduce((sum, t) => sum + t.total, 0);
+            const avgTrans = totalTrans > 0 ? totalRev / totalTrans : 0;
+
+            document.getElementById('totalTransactions').textContent = totalTrans;
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRev);
+            document.getElementById('avgTransaction').textContent = formatCurrency(avgTrans);
+
+            // Calculate Profit
+            let totalProfit = 0;
+            const allItems = getItems(); // Need items for buyPrice
+
+            filteredTransactions.forEach(t => {
+                t.items.forEach(soldItem => {
+                    const itemData = allItems.find(i => i.id === soldItem.id);
+                    // Use item's current buy price (simple approx) or stored buy price if we tracked it in transaction (ideal)
+                    // For now, use current master item buy price
+                    const buyPrice = itemData ? (itemData.buyPrice || 0) : 0;
+                    const profitPerItem = (soldItem.price - buyPrice) * soldItem.quantity;
+                    totalProfit += profitPerItem;
+                });
+            });
+
+            // Adjust for discounts? Total Revenue is post-discount. 
+            // Profit = Total Revenue - Total COGS
+            // COGS = Sum(BuyPrice * Qty)
+            let totalCOGS = 0;
+            filteredTransactions.forEach(t => {
+                t.items.forEach(soldItem => {
+                    const itemData = allItems.find(i => i.id === soldItem.id);
+                    const buyPrice = itemData ? (itemData.buyPrice || 0) : 0;
+                    totalCOGS += (buyPrice * soldItem.quantity);
+                });
+            });
+
+            // Real Profit = Revenue - COGS
+            // Note: Revenue already subtracts transaction discounts.
+            const realProfit = totalRev - totalCOGS;
+
+            document.getElementById('totalProfit').textContent = formatCurrency(realProfit);
+
+            document.getElementById('periodLabel').textContent = periodLabel;
+            document.getElementById('periodLabelRevenue').textContent = periodLabel;
+
+            // Update table
+            const tableBody = document.getElementById('reportTableBody');
+
+            if (filteredTransactions.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Tidak ada transaksi pada periode ini</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = filteredTransactions.map(t => `
+                <tr>
+                    <td>#${t.id}</td>
+                    <td>${formatDate(t.date)}</td>
+                    <td>${t.items.length} item</td>
+                    <td style="font-weight: 600;">${formatCurrency(t.total)}</td>
+                    <td>${formatCurrency(t.payment)}</td>
+                    <td style="color: var(--success);">${formatCurrency(t.change)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="showTransactionDetail(${t.id})">
+                            🔍 Detail
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update Chart
+        function updateChart(period) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+
+            if (reportChart) {
+                reportChart.destroy();
+            }
+
+            let chartData;
+            let chartType = 'line';
+
+            if (period === 'today') {
+                // For "Today", maybe show hourly if we had that data, 
+                // but since we only have daily/monthly helpers in app.js, 
+                // let's show last 7 days context or just the daily total?
+                // Better: Show last 7 days context even for "Today" filter to allow comparison?
+                // Or: Implement hourly breakdown? 
+                // Let's stick to Daily (Last 7 Days) for Today/Week context.
+                chartData = getDailySalesData(7);
+                chartType = 'bar';
+            } else if (period === 'week') {
+                chartData = getDailySalesData(7);
+                chartType = 'bar';
+            } else {
+                // Month / All -> Show Monthly trends
+                chartData = getMonthlySalesData(12);
+                chartType = 'line';
+            }
+
+            // Custom labels for chart title
+            let label = 'Penjualan';
+            if (period === 'today' || period === 'week') label = 'Penjualan Harian (7 Hari Terakhir)';
+            if (period === 'month' || period === 'all') label = 'Penjualan Bulanan (1 Tahun Terakhir)';
+
+            reportChart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: label,
+                        data: chartData.data,
+                        backgroundColor: chartType === 'bar' ? '#0d9488' : 'rgba(13, 148, 136, 0.1)',
+                        borderColor: '#0f766e',
+                        borderWidth: 2,
+                        fill: chartType === 'line',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return 'Rp ' + (value / 1000) + 'k';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return formatCurrency(context.raw);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Show Transaction Detail
+        function showTransactionDetail(id) {
+            const transactions = getTransactions();
+            const transaction = transactions.find(t => t.id === id);
+
+            if (!transaction) return;
+
+            const content = document.getElementById('detailContent');
+
+            // Build items list
+            const itemsHtml = transaction.items.map(item => `
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <div style="font-weight: 500;">${item.name}</div>
+                        <div style="font-size: 0.8em; color: gray;">${item.category || '-'}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>${item.quantity} x ${formatCurrency(item.price)}</div>
+                        <div style="font-weight: 500;">${formatCurrency(item.quantity * item.price)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            content.innerHTML = `
+                <div class="mb-lg">
+                    <div class="flex-between mb-sm">
+                        <span class="text-muted">ID Transaksi:</span>
+                        <span class="font-bold">#${transaction.id}</span>
+                    </div>
+                    <div class="flex-between mb-sm">
+                        <span class="text-muted">Tanggal:</span>
+                        <span>${formatDate(transaction.date)}</span>
+                    </div>
+                    <div class="flex-between mb-sm">
+                        <span class="text-muted">Kasir:</span>
+                        <span>${transaction.cashier || 'Admin'}</span>
+                    </div>
+                    <div class="flex-between">
+                        <span class="text-muted">Status:</span>
+                        <span class="badge badge-success">Selesai</span>
+                    </div>
+                </div>
+
+                <div class="mb-lg" style="border-top: 2px dashed #eee; border-bottom: 2px dashed #eee; padding: 10px 0;">
+                    ${itemsHtml}
+                </div>
+
+                <div>
+                    <div class="flex-between mb-sm font-bold" style="font-size: 1.1em;">
+                        <span>TOTAL</span>
+                        <span>${formatCurrency(transaction.total)}</span>
+                    </div>
+                    <div class="flex-between mb-sm">
+                        <span>Bayar (${transaction.paymentMethod === 'qris' ? 'QRIS' : 'Tunai'})</span>
+                        <span>${formatCurrency(transaction.payment)}</span>
+                    </div>
+                    <div class="flex-between text-success">
+                        <span>Kembalian</span>
+                        <span>${formatCurrency(transaction.change)}</span>
+                    </div>
+                </div>
+            `;
+
+            openModal('detailModal');
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            if (filteredTransactions.length === 0) {
+                showNotification('Tidak ada data untuk diexport', 'warning');
+                return;
+            }
+
+            // Prepare data
+            const data = [
+                ['LAPORAN PENJUALAN - SAJI KASIR'],
+                [`Periode: ${document.getElementById('periodLabel').textContent}`],
+                [`Tanggal Export: ${new Date().toLocaleString('id-ID')}`],
+                [],
+                ['ID', 'Tanggal & Waktu', 'Jumlah Item', 'Total', 'Bayar', 'Kembalian']
+            ];
+
+            filteredTransactions.forEach(t => {
+                data.push([
+                    `#${t.id}`,
+                    formatDate(t.date),
+                    `${t.items.length} item`,
+                    t.total,
+                    t.payment,
+                    t.change
+                ]);
+            });
+
+            // Add summary
+            data.push([]);
+            data.push(['RINGKASAN']);
+            data.push(['Total Transaksi', filteredTransactions.length]);
+            data.push(['Total Pendapatan', filteredTransactions.reduce((sum, t) => sum + t.total, 0)]);
+            data.push(['Rata-rata per Transaksi', filteredTransactions.reduce((sum, t) => sum + t.total, 0) / filteredTransactions.length]);
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // Set column widths
+            ws['!cols'] = [
+                { wch: 10 },
+                { wch: 25 },
+                { wch: 15 },
+                { wch: 15 },
+                { wch: 15 },
+                { wch: 15 }
+            ];
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Laporan');
+
+            // Save file
+            const filename = `Laporan_${currentFilter}_${new Date().getTime()}.xlsx`;
+            XLSX.writeFile(wb, filename);
+
+            showNotification('Excel berhasil didownload!', 'success');
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            if (filteredTransactions.length === 0) {
+                showNotification('Tidak ada data untuk diexport', 'warning');
+                return;
+            }
+
+            const reportContent = document.createElement('div');
+            reportContent.innerHTML = `
+                <div style="padding: 20px; font-family: Arial, sans-serif;">
+                    <h1 style="text-align: center; margin-bottom: 10px;">LAPORAN PENJUALAN</h1>
+                    <h2 style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 20px;">SAJI KASIR</h2>
+                    
+                    <div style="margin-bottom: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                        <p style="margin: 5px 0;"><strong>Periode:</strong> ${document.getElementById('periodLabel').textContent}</p>
+                        <p style="margin: 5px 0;"><strong>Tanggal Export:</strong> ${new Date().toLocaleString('id-ID')}</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                        <div style="padding: 15px; background: #e3f2fd; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.875rem; color: #666; margin-bottom: 5px;">Total Transaksi</div>
+                            <div style="font-size: 1.5rem; font-weight: 700;">${filteredTransactions.length}</div>
+                        </div>
+                        <div style="padding: 15px; background: #e8f5e9; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.875rem; color: #666; margin-bottom: 5px;">Total Pendapatan</div>
+                            <div style="font-size: 1.5rem; font-weight: 700;">${formatCurrency(filteredTransactions.reduce((sum, t) => sum + t.total, 0))}</div>
+                        </div>
+                        <div style="padding: 15px; background: #fff3e0; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.875rem; color: #666; margin-bottom: 5px;">Rata-rata Transaksi</div>
+                            <div style="font-size: 1.5rem; font-weight: 700;">${formatCurrency(filteredTransactions.reduce((sum, t) => sum + t.total, 0) / filteredTransactions.length)}</div>
+                        </div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <thead>
+                            <tr style="background: #f5f5f5;">
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">ID</th>
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Tanggal & Waktu</th>
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Items</th>
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Total</th>
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Bayar</th>
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Kembalian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredTransactions.map(t => `
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">#${t.id}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(t.date)}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${t.items.length} item</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${formatCurrency(t.total)}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${formatCurrency(t.payment)}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${formatCurrency(t.change)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            const opt = {
+                margin: 10,
+                filename: `Laporan_${currentFilter}_${new Date().getTime()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(reportContent).save();
+            showNotification('PDF sedang didownload...', 'success');
+        }
+
+        // Set active page
+        setActivePage('laporan');
+
+        // Load initial report
+        filterByPeriod('today');
+
+        // Fix for Chart Disappearing on Back Navigation (bfcache)
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted || !reportChart) {
+                // Force re-initialization if restored from cache or chart is missing
+                console.log('Restoring chart state...');
+                filterByPeriod(currentFilter);
+            }
+        });
+    </script>
+</body>
+
+</html>

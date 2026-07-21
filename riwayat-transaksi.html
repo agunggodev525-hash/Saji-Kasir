@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Transaksi - Aplikasi Kasir</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        // Init Dark Mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo-saji-kasir.jpg" alt="Saji Kasir" class="logo">
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="kasir.html" class="nav-link" data-page="kasir">
+                        <span class="nav-icon">🛒</span>
+                        <span>Kasir</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="data-barang.html" class="nav-link" data-page="data-barang">
+                        <span class="nav-icon">📦</span>
+                        <span>Data Barang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pelanggan.html" class="nav-link" data-page="pelanggan">
+                        <span class="nav-icon">👥</span>
+                        <span>Pelanggan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="riwayat-transaksi.html" class="nav-link active" data-page="riwayat">
+                        <span class="nav-icon">📜</span>
+                        <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="laporan.html" class="nav-link" data-page="laporan">
+                        <span class="nav-icon">📈</span>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="pengaturan.html" class="nav-link" data-page="pengaturan">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Riwayat Transaksi</h1>
+                <p>Lihat dan kelola riwayat penjualan</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-3 mb-lg">
+                <div class="stat-card">
+                    <div class="stat-label">Total Transaksi</div>
+                    <div class="stat-value" id="totalTransactions">0</div>
+                    <div class="stat-change text-muted">
+                        <span>📊</span>
+                        <span>Semua waktu</span>
+                    </div>
+                </div>
+
+                <div class="stat-card success">
+                    <div class="stat-label">Total Penjualan</div>
+                    <div class="stat-value" id="totalRevenue">Rp 0</div>
+                    <div class="stat-change positive">
+                        <span>💰</span>
+                        <span>Pendapatan kotor</span>
+                    </div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-label">Rata-rata Transaksi</div>
+                    <div class="stat-value" id="averageTransaction">Rp 0</div>
+                    <div class="stat-change text-muted">
+                        <span>📈</span>
+                        <span>Per transaksi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="card mb-lg">
+                <div class="flex-between gap-md" style="flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <input type="text" class="form-input" id="searchInput"
+                            placeholder="🔍 Cari transaksi (ID atau Nama Item)..." oninput="filterTransactions()">
+                    </div>
+                    <div class="flex gap-sm" style="flex-shrink: 0;">
+                        <select class="form-select" id="filterCustomer" onchange="filterTransactions()"
+                            style="min-width: 150px; display: none;">
+                            <option value="">Semua Pelanggan</option>
+                        </select>
+                        <select class="form-select" id="filterPeriod" onchange="filterByPeriod()"
+                            style="min-width: 150px;">
+                            <option value="all">Semua Waktu</option>
+                            <option value="today">Hari Ini</option>
+                            <option value="week">7 Hari Terakhir</option>
+                            <option value="month">30 Hari Terakhir</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Transaksi</h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No. Transaksi</th>
+                                <th>Tanggal & Waktu</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Bayar</th>
+                                <th>Kembalian</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Detail Transaksi</h3>
+                <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+
+            <div id="transactionDetail">
+                <!-- Detail will be loaded here -->
+            </div>
+
+            <div class="mt-lg">
+                <button class="btn btn-secondary w-full" onclick="closeModal('detailModal')">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="sync-service.js"></script>
+    <script src="sync-ui.js"></script>
+    <script>
+        // ============================================
+        // AUTHENTICATION & AUTHORIZATION
+        // ============================================
+
+        // Require login and admin role
+        requireAdmin();
+
+        // Update sidebar with user info
+        updateSidebarUserInfo();
+        filterNavigation();
+
+        // Initialize sample data if needed
+        initializeData();
+
+        // ============================================
+        // RIWAYAT TRANSAKSI LOGIC
+        // ============================================
+
+        let currentFilter = 'all';
+        let currentSearchQuery = '';
+
+        // Load and display transactions
+        function loadTransactions() {
+            const allTransactions = getTransactions().reverse(); // Newest first
+            const transactions = filterTransactionsByPeriod(allTransactions, currentFilter);
+
+            // Filter by Customer
+            const customerId = document.getElementById('filterCustomer').value;
+            let finalTransactions = transactions;
+
+            if (customerId) {
+                finalTransactions = transactions.filter(t => t.customerId === parseInt(customerId));
+            }
+
+            const filteredTransactions = currentSearchQuery
+                ? searchTransactions(finalTransactions, currentSearchQuery)
+                : finalTransactions;
+
+            updateSummary(filteredTransactions);
+            displayTransactions(filteredTransactions);
+        }
+
+        // Load Customer Filter
+        function loadCustomerFilter() {
+            const customers = getCustomers();
+            const select = document.getElementById('filterCustomer');
+
+            if (customers.length > 0) {
+                select.style.display = 'block';
+                customers.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = c.name;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        // Filter transactions by period
+        function filterTransactionsByPeriod(transactions, period) {
+            const now = new Date();
+
+            switch (period) {
+                case 'today':
+                    return transactions.filter(t =>
+                        new Date(t.date).toDateString() === now.toDateString()
+                    );
+
+                case 'week':
+                    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                    return transactions.filter(t => new Date(t.date) >= weekAgo);
+
+                case 'month':
+                    const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+                    return transactions.filter(t => new Date(t.date) >= monthAgo);
+
+                default:
+                    return transactions;
+            }
+        }
+
+        // Search transactions
+        function searchTransactions(transactions, query) {
+            const lowerQuery = query.toLowerCase();
+            return transactions.filter(t => {
+                const idMatch = t.id.toString().includes(lowerQuery);
+                const noTrxMatch = t.nomor_transaksi && t.nomor_transaksi.toLowerCase().includes(lowerQuery);
+                const itemsMatch = t.items.some(item =>
+                    item.name.toLowerCase().includes(lowerQuery)
+                );
+                return idMatch || noTrxMatch || itemsMatch;
+            });
+        }
+
+        // Update summary stats
+        function updateSummary(transactions) {
+            const totalTrans = transactions.length;
+            const totalRev = transactions.reduce((sum, t) => sum + t.total, 0);
+            const avgTrans = totalTrans > 0 ? totalRev / totalTrans : 0;
+
+            document.getElementById('totalTransactions').textContent = totalTrans;
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRev);
+            document.getElementById('averageTransaction').textContent = formatCurrency(avgTrans);
+        }
+
+        // Display transactions in table
+        function displayTransactions(transactions) {
+            const tableBody = document.getElementById('transactionsTableBody');
+
+            if (transactions.length === 0) {
+                const message = currentSearchQuery
+                    ? `Tidak ada transaksi yang sesuai dengan "${currentSearchQuery}"`
+                    : currentFilter === 'all'
+                        ? 'Belum ada transaksi. Lakukan transaksi pertama Anda di halaman Kasir.'
+                        : 'Tidak ada transaksi dalam periode ini.';
+
+                tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center text-muted">${message}</td>
+          </tr>
+        `;
+                return;
+            }
+
+            tableBody.innerHTML = transactions.map(t => `
+        <tr>
+          <td style="font-weight: 600; font-size: 0.9em;">${t.nomor_transaksi || '#' + t.id}</td>
+          <td>${formatDate(t.date)}</td>
+          <td>
+            <span class="badge badge-info">${t.items.length} item</span>
+          </td>
+          <td style="font-weight: 700; color: var(--primary);">${formatCurrency(t.total)}</td>
+          <td>${formatCurrency(t.payment)}</td>
+          <td style="color: var(--success);">${formatCurrency(t.change)}</td>
+          <td>
+            <button class="btn btn-sm btn-secondary" onclick="showTransactionDetail(${t.id})">
+              👁️ Detail
+            </button>
+          </td>
+        </tr>
+      `).join('');
+        }
+
+        // Filter by period
+        function filterByPeriod() {
+            currentFilter = document.getElementById('filterPeriod').value;
+            loadTransactions();
+        }
+
+        // Filter transactions based on search
+        function filterTransactions() {
+            currentSearchQuery = document.getElementById('searchInput').value;
+            loadTransactions();
+        }
+
+        // Show transaction detail
+        function showTransactionDetail(transactionId) {
+            const transaction = getTransactionById(transactionId);
+            if (!transaction) return;
+
+            const detailHtml = `
+        <div style="background: var(--bg-tertiary); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+            <div>
+              <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 4px;">No. Transaksi</div>
+              <div style="font-weight: 800; font-size: 1.25rem; word-break: break-all; color: var(--primary);">${transaction.nomor_transaksi || '#' + transaction.id}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">ID Internal: ${transaction.id}</div>
+              ${transaction.customerName ? `
+              <div style="margin-top: 8px;">
+                  <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2px;">Pelanggan</div>
+                  <div style="font-weight: 600;">${transaction.customerName} ${transaction.customerType ? `<span class="badge badge-sm badge-secondary">${transaction.customerType}</span>` : ''}</div>
+              </div>` : ''}
+            </div>
+            <div>
+              <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 4px;">Tanggal & Waktu</div>
+              <div style="font-weight: 600;">${formatDate(transaction.date)}</div>
+              
+              <div style="margin-top: 12px;">
+                 <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 4px;">Metode Bayar</div>
+                 <div style="font-weight: 600;">TRANS: ${transaction.paymentMethod === 'qris' ? 'QRIS' : 'TUNAI'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="margin-bottom: 12px; font-size: 1rem;">Item yang Dibeli</h4>
+          ${transaction.items.map(item => `
+            <div style="padding: 12px; background: var(--bg-tertiary); border-radius: var(--radius-md); margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
+                  <div style="font-size: 0.875rem; color: var(--text-muted);">${item.category}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 600; color: var(--primary);">${formatCurrency(item.price)}</div>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                <span style="color: var(--text-muted);">Jumlah: ${item.quantity}</span>
+                <span style="font-weight: 700;">Subtotal: ${formatCurrency(item.price * item.quantity)}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div style="background: var(--bg-tertiary); padding: 16px; border-radius: var(--radius-md);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="color: var(--text-muted);">Subtotal:</span>
+            <span style="font-weight: 600;">${formatCurrency(transaction.subtotal || transaction.total)}</span>
+          </div>
+          ${transaction.discount > 0 ? `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--danger);">
+            <span>Diskon:</span>
+            <span>-${formatCurrency(transaction.discount)}</span>
+          </div>` : ''}
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding-top: 8px; border-top: 1px dashed var(--bg-secondary);">
+            <span style="color: var(--text-muted);">Total Tagihan:</span>
+            <span style="font-weight: 700; font-size: 1.25rem; color: var(--primary);">${formatCurrency(transaction.total)}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="color: var(--text-muted);">Bayar:</span>
+            <span style="font-weight: 600;">${formatCurrency(transaction.payment)}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--bg-primary);">
+            <span style="color: var(--text-muted);">Kembalian:</span>
+            <span style="font-weight: 700; color: var(--success);">${formatCurrency(transaction.change)}</span>
+          </div>
+        </div>
+      `;
+
+            document.getElementById('transactionDetail').innerHTML = detailHtml;
+            openModal('detailModal');
+        }
+
+        // Set active page
+        setActivePage('riwayat');
+
+        // Load initial data
+        loadTransactions();
+
+        // Listen for remote updates
+        window.addEventListener('dataRefreshedFromServer', () => {
+            console.log('🔄 Reloading transactions due to server sync...');
+            loadTransactions();
+            showNotification('Data riwayat diperbarui dari server', 'info');
+        });
+    </script>
+</body>
+
+</html>

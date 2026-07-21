@@ -1,0 +1,21 @@
+{
+  "name": "Aplikasi Kasir Toko Amanah",
+  "short_name": "Kasir Amanah",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#6366f1",
+  "description": "Aplikasi Kasir Toko Amanah dengan dukungan offline",
+  "icons": [
+    {
+      "src": "logo-toko-amanah-new.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-toko-amanah-new.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

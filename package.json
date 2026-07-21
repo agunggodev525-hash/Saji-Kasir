@@ -1,0 +1,19 @@
+{
+    "name": "kasir-toko-amanah",
+    "version": "1.0.0",
+    "description": "Aplikasi Kasir Toko Amanah dengan Real-Time Sync",
+    "main": "electron-main.js",
+    "scripts": {
+        "start": "node server.js",
+        "electron:dev": "electron .",
+        "dist": "electron-builder",
+        "pack": "electron-builder --dir"
+    },
+    "dependencies": {
+        "socket.io": "^4.7.2"
+    },
+    "devDependencies": {
+        "electron": "^40.2.1",
+        "electron-builder": "^26.7.0"
+    }
+}
