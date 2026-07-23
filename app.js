@@ -1,19 +1,4 @@
-// Data Storage & Management
-const StorageKeys = {
-    ITEMS: 'kasir_items',
-    TRANSACTIONS: 'kasir_transactions',
-    CART: 'kasir_cart',
-    ITEM_CATEGORIES: 'kasir_categories', // Optional future use
-    SETTINGS: 'kasir_settings',
-    CUSTOMERS: 'kasir_customers'
-};
-
-// Customer Types with Auto-Discount
-const CustomerTypes = {
-    REGULAR: { name: 'Regular', discount: 0 },
-    MEMBER: { name: 'Member', discount: 5 },
-    VIP: { name: 'VIP', discount: 10 }
-};
+// Data Storage & Management Constants are now handled by js/storage.js
 
 // ============================================
 // THEME MANAGEMENT
@@ -324,34 +309,7 @@ function initializeData() {
     }
 }
 
-// Get data from localStorage
-function getData(key) {
-    const data = localStorage.getItem(key);
-    if (!data) return [];
-
-    try {
-        return JSON.parse(data);
-    } catch (e) {
-        console.error(`Error parsing data for ${key}:`, e);
-        // Backup corrupt data just in case
-        localStorage.setItem(`${key}_corrupt_${Date.now()}`, data);
-        // Reset to empty array
-        return [];
-    }
-}
-
-// Save data to localStorage
-function saveData(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify(data));
-    } catch (e) {
-        console.error('Error saving data:', e);
-        // Could be quota exceeded
-        if (e.name === 'QuotaExceededError') {
-            alert('Penyimpanan penuh! Harap hapus riwayat transaksi lama.');
-        }
-    }
-}
+// getData and saveData are now handled by js/storage.js
 
 // Items Management
 function getItems() {
@@ -364,9 +322,26 @@ function getItemById(id) {
 }
 
 function addItem(item) {
-    // Validation
-    if (!item.name || item.price < 0 || item.stock < 0) {
-        console.error('Invalid item data', item);
+    // Strict Validation
+    if (!item || typeof item !== 'object') {
+        console.error('Invalid item payload');
+        return null;
+    }
+    
+    if (!item.name || item.name.trim() === '') {
+        alert('Nama barang tidak boleh kosong');
+        return null;
+    }
+
+    const price = parseFloat(item.price);
+    if (isNaN(price) || price < 0) {
+        alert('Harga jual tidak valid');
+        return null;
+    }
+
+    const stock = parseInt(item.stock);
+    if (isNaN(stock) || stock < 0) {
+        alert('Stok tidak valid');
         return null;
     }
 
@@ -374,12 +349,15 @@ function addItem(item) {
     // Ensure IDs are always numbers
     const newId = items.length > 0 ? Math.max(...items.map(i => parseInt(i.id) || 0)) + 1 : 1;
     const now = new Date().toISOString();
+    
     const newItem = {
-        ...item,
         id: newId,
-        price: parseFloat(item.price) || 0,
-        buyPrice: parseFloat(item.buyPrice) || 0, // Add buyPrice
-        stock: parseInt(item.stock) || 0,
+        name: item.name.trim(),
+        price: price,
+        buyPrice: parseFloat(item.buyPrice) || 0,
+        stock: stock,
+        category: item.category || 'Lainnya',
+        barcode: item.barcode || '',
         _meta: {
             createdAt: now,
             updatedAt: now,
@@ -388,6 +366,7 @@ function addItem(item) {
             version: 1
         }
     };
+    
     items.push(newItem);
     saveData(StorageKeys.ITEMS, items);
 
@@ -637,6 +616,17 @@ function generateTransactionNumber() {
 }
 
 function addTransaction(transaction) {
+    // Strict Validation
+    if (!transaction || !transaction.items || !Array.isArray(transaction.items) || transaction.items.length === 0) {
+        console.error('Transaksi tidak valid: Kosong atau format salah');
+        return null;
+    }
+
+    if (isNaN(parseFloat(transaction.total)) || parseFloat(transaction.total) < 0) {
+        console.error('Transaksi tidak valid: Total salah');
+        return null;
+    }
+
     const transactions = getTransactions();
     // Use Timestamp for internal ID to minimize collision risk across devices
     const newId = Date.now();
@@ -648,7 +638,14 @@ function addTransaction(transaction) {
     const newTransaction = {
         id: newId,
         nomor_transaksi: nomorTransaksi, // Add new mandatory field
-        ...transaction,
+        items: transaction.items, // Ensure only necessary fields are mapped
+        total: parseFloat(transaction.total) || 0,
+        payment: parseFloat(transaction.payment) || 0,
+        change: parseFloat(transaction.change) || 0,
+        customerId: transaction.customerId || null,
+        customerName: transaction.customerName || 'Umum',
+        transactionType: transaction.transactionType || 'REGULAR',
+        note: transaction.note || '',
         paymentMethod: transaction.paymentMethod || 'cash', // Ensure default
         date: now,
         _meta: {
@@ -664,9 +661,12 @@ function addTransaction(transaction) {
 
     // Update stock
     transaction.items.forEach(item => {
+        // Handle Debt Payment special item
+        if (item.id === 'DEBT_PAY') return;
+        
         const product = getItemById(item.id);
         if (product) {
-            updateItem(item.id, { stock: product.stock - item.quantity });
+            updateItem(item.id, { stock: Math.max(0, product.stock - item.quantity) });
         }
     });
 
